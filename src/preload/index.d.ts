@@ -7,7 +7,11 @@ declare global {
       windowMinimize
       windowMaximize
       windowClose
-      isWindowMaximized
+      recentDirExists
+      getCurrentDir
+      handleDirSelect
+      handleDirSubmit
+      mapDir
     }
   }
 }

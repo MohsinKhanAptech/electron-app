@@ -6,10 +6,30 @@ if (!process.contextIsolated) {
 
 try {
   contextBridge.exposeInMainWorld('context', {
-    windowMinimize: () => ipcRenderer.send('window-minimize'),
-    windowMaximize: () => ipcRenderer.send('window-maximize'),
-    windowClose: () => ipcRenderer.send('window-close'),
-    isWindowMaximized: () => {}
+    windowMinimize: () => {
+      ipcRenderer.send('window-minimize')
+    },
+    windowMaximize: () => {
+      ipcRenderer.send('window-maximize')
+    },
+    windowClose: () => {
+      ipcRenderer.send('window-close')
+    },
+    recentDirExists: () => {
+      return ipcRenderer.invoke('recentDirExists')
+    },
+    getCurrentDir: () => {
+      return ipcRenderer.invoke('getCurrentDir')
+    },
+    handleDirSelect: () => {
+      ipcRenderer.send('handleDirSelect')
+    },
+    handleDirSubmit: (dirName: string) => {
+      ipcRenderer.send('handleDirSubmit', dirName)
+    },
+    mapDir: () => {
+      return ipcRenderer.invoke('mapDir')
+    }
   })
 } catch (error) {
   console.log(error)

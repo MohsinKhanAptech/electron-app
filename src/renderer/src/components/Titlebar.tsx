@@ -17,7 +17,7 @@ function Titlebar(): JSX.Element {
   const windowCloe = (): void => window.context.windowClose()
 
   return (
-    <div id="titlebar" className="flex w-full overflow-hidden bg-neutral-900">
+    <div id="titlebar" className="z-50 flex w-full overflow-hidden bg-neutral-900">
       <ul id="windowButtons" className="flex ml-auto *:p-3">
         <li onClick={() => windowMinimize()} id="windowMinimize" className="hover:bg-neutral-800">
           <VscChromeMinimize />

@@ -1,7 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
+import fs from 'fs-extra'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import directoryTree from 'directory-tree'
 
 function createWindow(): void {
   // Create the browser window.
@@ -96,4 +98,91 @@ ipcMain.on('window-maximize', () => {
 ipcMain.on('window-close', () => {
   const window = BrowserWindow.getFocusedWindow()
   window?.close()
+})
+
+// get app path
+const appPath = app.getAppPath()
+
+//get app setting path
+const appSettingsPath = appPath + '/appSettings.json'
+
+// declare appsettings file
+let appSettignsFile = { test: 'test' }
+
+//* ensure appsettings.json file is created
+fs.readJSON(appSettingsPath, (err, obj) => {
+  // create file if it doesnt exist
+  if (err && err[1] === -2) {
+    fs.ensureFile(appSettingsPath, (err) => {
+      if (err) return console.log(err)
+      fs.writeJSON(appSettingsPath, appSettignsFile, (err) => {
+        if (err) return console.log(err)
+      })
+    })
+  }
+  if (err && err[1] !== -2) return console.log(err)
+
+  if (obj !== appDataFile) {
+    appSettignsFile = obj
+  }
+})
+
+// get appData path
+const appDataPath = app.getPath('appData') + '/B-Project/appData.json'
+
+// declare app data file
+let appDataFile = { recentDir: '' }
+
+// read appdata file
+fs.readJSON(appDataPath, (err, obj) => {
+  // create file if it doesnt exist
+  if (err && err[1] === -2) {
+    fs.ensureFile(appDataPath, (err) => {
+      if (err) return console.log(err)
+      fs.writeJSON(appDataPath, appDataFile, (err) => {
+        if (err) return console.log(err)
+      })
+    })
+  }
+  if (err && err[1] !== -2) return console.log(err)
+
+  if (obj !== appDataFile) {
+    appDataFile = obj
+    workingDir = appDataFile.recentDir
+  }
+})
+
+ipcMain.handle('recentDirExists', () => {
+  return appDataFile.recentDir === '' ? false : true
+})
+
+let workingDir: string
+ipcMain.on('handleDirSelect', () => {
+  dialog.showOpenDialog({ properties: ['openDirectory'] }).then((obj) => {
+    workingDir = appDataFile.recentDir = obj.filePaths.join()
+  })
+})
+
+ipcMain.handle('getCurrentDir', () => {
+  return workingDir
+})
+
+ipcMain.on('handleDirSubmit', (_event, dirName: string) => {
+  dirName ? (workingDir += '/' + dirName) : workingDir
+  appDataFile.recentDir = workingDir
+  fs.ensureDir(workingDir, (err) => {
+    if (err) return console.log(err)
+  })
+})
+
+let dirTree
+ipcMain.handle('mapDir', () => {
+  dirTree = directoryTree(workingDir, { extensions: /\.md/, attributes: ['type'] })
+  return dirTree
+})
+
+app.on('quit', () => {
+  fs.writeJSON(appDataPath, appDataFile, (err) => {
+    if (err) return console.log(err)
+  })
 })
