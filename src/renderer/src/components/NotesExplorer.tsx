@@ -1,8 +1,14 @@
+/* eslint-disable react/prop-types */
 import { FaFileMedical, FaFolder, FaFolderPlus, FaNoteSticky, FaRotate } from 'react-icons/fa6'
 import { useEffect, useState } from 'react'
 import NotesExplorerItem from './NotesExplorerItem'
 
-function NotesExplorer(): JSX.Element {
+function NotesExplorer({
+  currentNotePath,
+  updateCurrentNotePath,
+  updateHideDirCreate,
+  updateHideNoteCreate
+}): JSX.Element {
   const [dirTree, updateDirTree] = useState({ name: '', path: '', type: '', children: [] })
 
   const getDirTree = (): void => {
@@ -22,12 +28,16 @@ function NotesExplorer(): JSX.Element {
     const style = {
       borderLeft: nest * 2 + 'px rgb(255,255,255,0.1) solid'
     }
+    const activeStyle = {
+      borderLeft: nest * 2 + 'px rgb(255,255,255,0.5) solid'
+    }
+
     element.children.forEach((child) => {
       if (child.type === 'directory') {
         result = (
           <>
             {result}
-            <NotesExplorerItem style={style} className={`ps-[${nest}rem]`}>
+            <NotesExplorerItem style={style}>
               <FaFolder /> {child.name}
             </NotesExplorerItem>
             {mapDir(child)}
@@ -39,9 +49,10 @@ function NotesExplorer(): JSX.Element {
           <>
             {result}
             <NotesExplorerItem
-              style={style}
-              className={`ps-[${nest}rem]`}
-              onClick={() => console.log(child.name)}
+              style={child.path === currentNotePath ? activeStyle : style}
+              onClick={() => {
+                updateCurrentNotePath(child.path)
+              }}
             >
               <FaNoteSticky /> {child.name.slice(0, child.name.search(/\.md/))}
             </NotesExplorerItem>
@@ -54,18 +65,28 @@ function NotesExplorer(): JSX.Element {
   }
 
   return (
-    <div className="w-56 border-l bg-neutral-900 border-neutral-100/5 pe-1">
+    <div className="w-56 flex flex-col border-l bg-neutral-900 border-neutral-100/5 pe-1 h-[calc(100vh-2.5rem)]">
       <div className="flex items-center justify-between gap-3 p-3 text-lg">
         <p className="overflow-hidden text-ellipsis whitespace-nowrap">
           {dirTree.name.toUpperCase()}
         </p>
         <div className="flex gap-3 *:flex-shrink-0 items-center">
-          <FaFileMedical className="hover:opacity-75 active:opacity-100" />
-          <FaFolderPlus className="hover:opacity-75 active:opacity-100" />
+          <FaFileMedical
+            className="hover:opacity-75 active:opacity-100"
+            onClick={() => {
+              updateHideNoteCreate(false)
+            }}
+          />
+          <FaFolderPlus
+            className="hover:opacity-75 active:opacity-100"
+            onClick={() => updateHideDirCreate(false)}
+          />
           <FaRotate className="hover:opacity-75 active:opacity-100" onClick={getDirTree} />
         </div>
       </div>
-      <div className="">{mapDir(dirTree)}</div>
+      <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700 active:scrollbar-thumb-neutral-600">
+        {mapDir(dirTree)}
+      </div>
     </div>
   )
 }

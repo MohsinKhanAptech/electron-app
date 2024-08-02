@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { FaArrowsRotate, FaCheck, FaFolder } from 'react-icons/fa6'
 
 function DirSelect({ updateHideDirSelect }): JSX.Element {
@@ -22,7 +22,6 @@ function DirSelect({ updateHideDirSelect }): JSX.Element {
       } else {
         clearInterval(dirUpdateInterval)
       }
-      console.log(workingDir)
     }, 500)
   }
 
@@ -35,7 +34,8 @@ function DirSelect({ updateHideDirSelect }): JSX.Element {
 
   // handle submit i.e save selected working dir,
   // hide the dir select element and clear dirUpdateInterval
-  const handleSubmit = (): void => {
+  const handleSubmit = (event: FormEvent): void => {
+    event.preventDefault()
     window.context.handleDirSubmit(dirName)
     window.context.recentDirExists().then((result) => {
       updateHideDirSelect(result)
@@ -47,15 +47,12 @@ function DirSelect({ updateHideDirSelect }): JSX.Element {
   useEffect(() => getCurrentDir(), [])
 
   return (
-    <div
-      id="dirSelect"
-      className="absolute flex items-center justify-center w-screen h-screen bg-neutral-950"
-    >
+    <div className="absolute z-40 flex items-center justify-center w-screen h-screen bg-neutral-950">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-3 p-8 px-10 rounded min-w-96 bg-neutral-900"
       >
-        <p className="mb-2 text-xl">Select a working directory</p>
+        <p className="mb-2 text-xl">Select a Working Directory</p>
         <p onClick={getCurrentDir} className="flex items-center justify-between">
           Dir: {workingDir || ' No Directory Selected'}
           <FaArrowsRotate className="mx-2 cursor-pointer" />
@@ -65,7 +62,8 @@ function DirSelect({ updateHideDirSelect }): JSX.Element {
           onChange={handleDirInput}
           className="p-3 border-none rounded outline-none bg-neutral-700"
           placeholder="Directory Name"
-          pattern="^[\w-]+$"
+          pattern="[\w\-\/]+"
+          autoFocus
         />
         <button
           className="flex items-center justify-center gap-2 p-3 rounded bg-neutral-800 hover:bg-neutral-700/70 active:bg-neutral-800"

@@ -12,6 +12,9 @@ declare global {
       handleDirSelect
       handleDirSubmit
       mapDir
+      createNote
+      createDir
+      openNote
     }
   }
 }

@@ -24,11 +24,20 @@ try {
     handleDirSelect: () => {
       ipcRenderer.send('handleDirSelect')
     },
-    handleDirSubmit: (dirName: string) => {
+    handleDirSubmit: (dirName) => {
       ipcRenderer.send('handleDirSubmit', dirName)
     },
     mapDir: () => {
       return ipcRenderer.invoke('mapDir')
+    },
+    createNote: (fileName) => {
+      ipcRenderer.invoke('createNote', fileName)
+    },
+    createDir: (dirName) => {
+      ipcRenderer.invoke('createDir', dirName)
+    },
+    openNote: (filePath) => {
+      return ipcRenderer.invoke('openNote', filePath)
     }
   })
 } catch (error) {

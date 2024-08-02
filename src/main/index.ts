@@ -181,6 +181,27 @@ ipcMain.handle('mapDir', () => {
   return dirTree
 })
 
+ipcMain.handle('createNote', (_event, fileName) => {
+  const filePath = workingDir + '/' + fileName + '.md'
+  fs.ensureFile(filePath, (err) => {
+    if (err) return console.log(err)
+    fs.writeFile(filePath, `# ${fileName}`, (err) => {
+      if (err) return console.log(err)
+    })
+  })
+})
+
+ipcMain.handle('createDir', (_event, dirName) => {
+  const dirPath = workingDir + '/' + dirName
+  fs.ensureDir(dirPath, (err) => {
+    if (err) return console.log(err)
+  })
+})
+
+ipcMain.handle('openNote', (_event, filePath) => {
+  return fs.readFileSync(filePath, { encoding: 'utf8' })
+})
+
 app.on('quit', () => {
   fs.writeJSON(appDataPath, appDataFile, (err) => {
     if (err) return console.log(err)

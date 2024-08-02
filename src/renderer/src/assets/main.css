@@ -32,3 +32,58 @@
     -webkit-user-drag: none;
   }
 }
+
+.main-container {
+  @apply p-4;
+}
+.ck.ck-editor__editable_inline > *:first-child {
+  @apply !m-0;
+}
+.main-container h1 {
+  @apply text-5xl pt-4 pb-6;
+}
+.main-container h2 {
+  @apply text-4xl py-5;
+}
+.main-container h3 {
+  @apply text-3xl py-4;
+}
+.main-container h4 {
+  @apply text-2xl py-3;
+}
+.main-container h5 {
+  @apply text-xl py-2;
+}
+.main-container h6 {
+  @apply text-lg py-1;
+}
+.main-container p {
+  @apply text-base;
+}
+
+.main-container ul {
+  @apply list-disc list-inside m-auto;
+}
+.main-container ol {
+  @apply list-decimal list-inside m-auto;
+}
+.main-container li {
+  @apply m-auto;
+}
+
+.ck-editor__editable .ck-list-bogus-paragraph {
+  @apply !inline;
+}
+
+.ck-content {
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.ck-powered-by-balloon {
+  display: none !important;
+}
+.ck.ck-editor__editable.ck-focused:not(.ck-editor__nested-editable) {
+  border-color: transparent !important;
+  box-shadow: none !important ;
+}
