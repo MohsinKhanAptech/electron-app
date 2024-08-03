@@ -276,7 +276,7 @@ export default function Ckeditor({ currentNotePath }): JSX.Element {
       }
     },
     autosave: {
-      watingTime: 5000,
+      watingTime: 1000,
       save(editor) {
         window.context.saveNote(editor.getData())
       }
