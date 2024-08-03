@@ -38,6 +38,9 @@ try {
     },
     openNote: (filePath) => {
       return ipcRenderer.invoke('openNote', filePath)
+    },
+    saveNote: (noteData) => {
+      ipcRenderer.invoke('saveNote', noteData)
     }
   })
 } catch (error) {

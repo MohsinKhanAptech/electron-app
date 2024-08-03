@@ -15,6 +15,7 @@ declare global {
       createNote
       createDir
       openNote
+      saveNote
     }
   }
 }

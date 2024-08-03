@@ -275,6 +275,12 @@ export default function Ckeditor({ currentNotePath }): JSX.Element {
         reversed: true
       }
     },
+    autosave: {
+      watingTime: 5000,
+      save(editor) {
+        window.context.saveNote(editor.getData())
+      }
+    },
     placeholder: 'Type or paste your content here!'
   }
 
@@ -298,10 +304,10 @@ export default function Ckeditor({ currentNotePath }): JSX.Element {
     )
   }
   return (
-      <div className="main-container">
-        <div className="editor-container editor-container_balloon-editor" ref={editorContainerRef}>
-          <div className="editor-container__editor">
-            <div ref={editorRef}>
+    <div className="main-container">
+      <div className="editor-container editor-container_balloon-editor" ref={editorContainerRef}>
+        <div className="editor-container__editor">
+          <div ref={editorRef}>
             {isLayoutReady && (
               <CKEditor editor={BalloonEditor} onReady={editorReady} config={editorConfig} />
             )}

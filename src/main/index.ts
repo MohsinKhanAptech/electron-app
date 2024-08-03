@@ -198,8 +198,16 @@ ipcMain.handle('createDir', (_event, dirName) => {
   })
 })
 
+let currentNotePath
 ipcMain.handle('openNote', (_event, filePath) => {
+  currentNotePath = filePath
   return fs.readFileSync(filePath, { encoding: 'utf8' })
+})
+
+ipcMain.handle('saveNote', (_event, noteData) => {
+  fs.writeFile(currentNotePath, noteData, (err) => {
+    if (err) return console.log(err)
+  })
 })
 
 app.on('quit', () => {
