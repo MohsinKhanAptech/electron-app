@@ -16,6 +16,20 @@ declare global {
       createDir
       openNote
       saveNote
+      git: {
+        setup
+        init
+        branch
+        status
+        add
+        addRemote
+        listRemote
+        getRemotes
+        commit
+        push
+        pull
+        sync
+      }
     }
   }
 }

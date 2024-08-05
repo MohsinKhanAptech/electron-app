@@ -41,6 +41,24 @@ try {
     },
     saveNote: (noteData) => {
       ipcRenderer.invoke('saveNote', noteData)
+    },
+    git: {
+      setup: () => ipcRenderer.invoke('gitSetup'),
+      init: () => ipcRenderer.invoke('gitInit'),
+      branch: () => ipcRenderer.invoke('gitBranch'),
+      status: () => ipcRenderer.invoke('gitStatus'),
+      add: () => ipcRenderer.invoke('gitAdd'),
+      addRemote: (remoteURL) => ipcRenderer.invoke('gitAddRemote', remoteURL),
+      listRemote: () => {
+        return ipcRenderer.invoke('gitListRemote')
+      },
+      getRemotes: () => {
+        return ipcRenderer.invoke('gitGetRemotes')
+      },
+      commit: () => ipcRenderer.invoke('gitCommit'),
+      push: () => ipcRenderer.invoke('gitPush'),
+      pull: () => ipcRenderer.invoke('gitPull'),
+      sync: () => ipcRenderer.invoke('gitSync')
     }
   })
 } catch (error) {

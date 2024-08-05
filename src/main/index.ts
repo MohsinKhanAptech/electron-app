@@ -4,6 +4,7 @@ import fs from 'fs-extra'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import directoryTree from 'directory-tree'
+import { simpleGit, SimpleGit, SimpleGitOptions } from 'simple-git'
 
 function createWindow(): void {
   // Create the browser window.
@@ -42,6 +43,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  mainWindow.webContents.session.setSpellCheckerEnabled(false)
 }
 
 // This method will be called when Electron has finished
@@ -149,6 +152,7 @@ fs.readJSON(appDataPath, (err, obj) => {
   if (obj !== appDataFile) {
     appDataFile = obj
     workingDir = appDataFile.recentDir
+    gitSetup()
   }
 })
 
@@ -173,11 +177,19 @@ ipcMain.on('handleDirSubmit', (_event, dirName: string) => {
   fs.ensureDir(workingDir, (err) => {
     if (err) return console.log(err)
   })
+  fs.writeJSON(appDataPath, appDataFile, (err) => {
+    if (err) return console.log(err)
+  })
+  gitSetup()
 })
 
 let dirTree
 ipcMain.handle('mapDir', () => {
-  dirTree = directoryTree(workingDir, { extensions: /\.md/, attributes: ['type'] })
+  dirTree = directoryTree(workingDir, {
+    extensions: /\.md/,
+    attributes: ['type'],
+    exclude: /\.(git)/
+  })
   return dirTree
 })
 
@@ -210,7 +222,129 @@ ipcMain.handle('saveNote', (_event, noteData) => {
   })
 })
 
-app.on('quit', () => {
+let gitOptions: Partial<SimpleGitOptions> = {}
+let git: SimpleGit
+
+const gitSetup = (): void => {
+  gitOptions = {
+    baseDir: workingDir,
+    binary: 'git',
+    maxConcurrentProcesses: 6,
+    trimmed: false
+  }
+  git = simpleGit(gitOptions)
+}
+
+ipcMain.handle('gitSetup', () => {
+  gitSetup()
+})
+
+ipcMain.handle('gitInit', () => {
+  gitSetup()
+  git.init()
+})
+
+ipcMain.handle('gitBranch', () => {
+  git.branch(['-M', 'main'])
+})
+
+ipcMain.handle('gitStatus', () => {
+  git.status((err, result) => {
+    if (err) return console.log(err)
+    console.log(result)
+  })
+})
+
+ipcMain.handle('gitAdd', () => {
+  git.add('.', (err, result) => {
+    if (err) return console.log(err)
+    console.log(result)
+  })
+})
+
+ipcMain.handle('gitAddRemote', (_event, remoteURL) => {
+  git.addRemote('origin', remoteURL, (err, result) => {
+    if (err?.message.includes('error: remote origin already exists.')) {
+      git
+        .removeRemote('origin', (err, result) => {
+          if (err) return console.log(err)
+          console.log(result)
+        })
+        .addRemote('origin', remoteURL, (err, result) => {
+          if (err) return console.log(err)
+          console.log(result)
+        })
+    } else return console.log(err)
+    console.log('add remote Done')
+    console.log(result)
+  })
+})
+
+ipcMain.handle('gitListRemote', () => {
+  return git.listRemote([], (err, result) => {
+    if (err) {
+      console.log(err)
+    }
+    console.log(result)
+  })
+})
+
+ipcMain.handle('gitGetRemotes', () => {
+  return git.getRemotes(true, (err, result) => {
+    if (err) {
+      console.log(err)
+    }
+    console.log(result)
+  })
+})
+
+ipcMain.handle('gitCommit', () => {
+  git.commit('update', (err, result) => {
+    if (err) return console.log(err)
+    console.log(result)
+  })
+})
+
+ipcMain.handle('gitPush', () => {
+  git.push(['--set-upstream', 'origin', 'main'], (err, result) => {
+    if (err) return console.log(err)
+    console.log(result)
+  })
+})
+
+ipcMain.handle('gitPull', () => {
+  git.pull(['--rebase=true', 'origin', 'main'], (err, result) => {
+    if (err) return console.log(err)
+    console.log(result)
+  })
+})
+
+ipcMain.handle('gitSync', async () => {
+  await git.init()
+  await git.branch(['-M', 'main'])
+  await git
+    .add('.', (err, result) => {
+      if (err) console.log(err)
+      console.log('add Done')
+      console.log(result)
+    })
+    .commit('update', (err, result) => {
+      if (err) console.log(err)
+      console.log('commit Done')
+      console.log(result)
+    })
+  await git.pull(['--rebase=true', 'origin', 'main'], (err, result) => {
+    if (err) return console.log(err)
+    console.log('pull Done')
+    console.log(result)
+  })
+  await git.push(['--set-upstream', 'origin', 'main'], (err, result) => {
+    if (err) console.log(err)
+    console.log('push Done' + result)
+  })
+})
+
+app.on('before-quit', () => {
   fs.writeJSON(appDataPath, appDataFile, (err) => {
     if (err) return console.log(err)
   })
