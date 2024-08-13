@@ -50,7 +50,7 @@ function NoteCreate({ updateHideNoteCreate }): JSX.Element {
             onChange={handleInput}
             className="flex-grow p-3 border-none rounded outline-none bg-neutral-700"
             placeholder="Enter Directory Name"
-            pattern="[\w\-\/]+"
+            pattern="[\w\-\/ ]+"
             autoFocus
           />
           <button

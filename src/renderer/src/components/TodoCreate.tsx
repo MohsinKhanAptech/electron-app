@@ -2,8 +2,8 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { FaCheck, FaXmark } from 'react-icons/fa6'
 
-function DirCreate({ updateHideDirCreate }): JSX.Element {
-  const [dirName, updateDirName] = useState('')
+function TodoCreate({ updateHideTodoCreate }): JSX.Element {
+  const [fileName, updateFileName] = useState('')
   const [workingDir, updateWorkingDir] = useState('')
 
   // get current working dir from ipcMain and push to state
@@ -13,20 +13,20 @@ function DirCreate({ updateHideDirCreate }): JSX.Element {
     })
   }
 
-  // handle dir name input event
+  // handle file name input event
   const handleInput = (element): void => {
-    updateDirName(element.target.value)
+    updateFileName(element.target.value)
   }
 
-  const hideDirCreate = (): void => {
-    updateHideDirCreate(true)
+  const hideTodoCreate = (): void => {
+    updateHideTodoCreate(true)
   }
 
   // handle submit i.e create dir and hide the dir create element
   const handleSubmit = (event: FormEvent): void => {
     event.preventDefault()
-    window.context.createDir(dirName)
-    hideDirCreate()
+    window.context.createTodo(fileName)
+    hideTodoCreate()
   }
 
   // try to get working dir if its set
@@ -35,23 +35,21 @@ function DirCreate({ updateHideDirCreate }): JSX.Element {
   return (
     <div
       className="absolute z-40 flex items-center justify-center w-screen h-screen bg-neutral-950/50"
-      onClick={hideDirCreate}
+      onClick={hideTodoCreate}
     >
       <form
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
         className="flex flex-col gap-3 p-8 px-10 rounded min-w-96 bg-neutral-900"
       >
-        <p className="text-xl">Select Directory Name</p>
-        <p className="flex-grow-0 overflow-hidden text-ellipsis whitespace-nowrap">
-          Dir: {workingDir + '/' + dirName}
-        </p>
+        <p className="text-xl">Select Category Name</p>
+        <p className="">Dir: {workingDir + '/' + fileName}</p>
         <div className="flex flex-grow gap-2">
           <input
             type="text"
             onChange={handleInput}
             className="flex-grow p-3 border-none rounded outline-none bg-neutral-700"
-            placeholder="Enter Directory Name"
+            placeholder="Enter Category Name"
             pattern="[\w\-\/ ]+"
             autoFocus
           />
@@ -64,7 +62,7 @@ function DirCreate({ updateHideDirCreate }): JSX.Element {
           <button
             className="p-3 rounded bg-neutral-800 hover:bg-neutral-700/70 active:bg-neutral-800"
             type="button"
-            onClick={hideDirCreate}
+            onClick={hideTodoCreate}
           >
             <FaXmark />
           </button>
@@ -74,4 +72,4 @@ function DirCreate({ updateHideDirCreate }): JSX.Element {
   )
 }
 
-export default DirCreate
+export default TodoCreate

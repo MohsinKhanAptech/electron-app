@@ -62,7 +62,7 @@ function DirSelect({ updateHideDirSelect }): JSX.Element {
           onChange={handleDirInput}
           className="p-3 border-none rounded outline-none bg-neutral-700"
           placeholder="Directory Name"
-          pattern="[\w\-\/]+"
+          pattern="[\w\-\/ ]+"
           autoFocus
         />
         <button

@@ -176,6 +176,12 @@ ipcMain.on('handleDirSubmit', (_event, dirName: string) => {
   appDataFile.recentDir = workingDir
   fs.ensureDir(workingDir, (err) => {
     if (err) return console.log(err)
+    fs.ensureDir(workingDir + '/Notes', (err) => {
+      if (err) return console.log(err)
+    })
+    fs.ensureDir(workingDir + '/Todos', (err) => {
+      if (err) return console.log(err)
+    })
   })
   fs.writeJSON(appDataPath, appDataFile, (err) => {
     if (err) return console.log(err)
@@ -184,17 +190,15 @@ ipcMain.on('handleDirSubmit', (_event, dirName: string) => {
 })
 
 let dirTree
-ipcMain.handle('mapDir', () => {
-  dirTree = directoryTree(workingDir, {
+ipcMain.handle('getNotesDirTree', () => {
+  dirTree = directoryTree(workingDir + '/Notes', {
     extensions: /\.md/,
-    attributes: ['type'],
-    exclude: /\.(git)/
+    attributes: ['type']
   })
   return dirTree
 })
-
 ipcMain.handle('createNote', (_event, fileName) => {
-  const filePath = workingDir + '/' + fileName + '.md'
+  const filePath = workingDir + '/Notes/' + fileName + '.md'
   fs.ensureFile(filePath, (err) => {
     if (err) return console.log(err)
     fs.writeFile(filePath, `# ${fileName}`, (err) => {
@@ -202,22 +206,66 @@ ipcMain.handle('createNote', (_event, fileName) => {
     })
   })
 })
-
 ipcMain.handle('createDir', (_event, dirName) => {
   const dirPath = workingDir + '/' + dirName
   fs.ensureDir(dirPath, (err) => {
     if (err) return console.log(err)
   })
 })
-
 let currentNotePath
 ipcMain.handle('openNote', (_event, filePath) => {
   currentNotePath = filePath
   return fs.readFileSync(filePath, { encoding: 'utf8' })
 })
+ipcMain.handle('saveNote', (_event, data) => {
+  if (data === '') data = Date.now
+  fs.writeFile(currentNotePath, data, (err) => {
+    if (err) return console.log(err)
+  })
+})
 
-ipcMain.handle('saveNote', (_event, noteData) => {
-  fs.writeFile(currentNotePath, noteData, (err) => {
+ipcMain.handle('getTodosDirTree', () => {
+  dirTree = directoryTree(workingDir + '/Todos', {
+    extensions: /\.json/,
+    attributes: ['type']
+  })
+  return dirTree
+})
+// const todoTemplate = [
+//   {
+//     isCompleted: false,
+//     title: '',
+//     note: '',
+//     subTodo: [
+//       {
+//         isCompleted: false,
+//         note: ''
+//       }
+//     ],
+//     tags: [],
+//     priority: '',
+//     assignedDate: '',
+//     createdAt: '',
+//     updatedAt: '',
+//     conpletedAt: ''
+//   }
+// ]
+ipcMain.handle('createTodo', (_event, fileName) => {
+  const filePath = workingDir + '/Todos/' + fileName + '.json'
+  fs.ensureFile(filePath, (err) => {
+    if (err) return console.log(err)
+    fs.writeJSON(filePath, [], (err) => {
+      if (err) return console.log(err)
+    })
+  })
+})
+let currentTodoPath
+ipcMain.handle('openTodo', (_event, filePath) => {
+  currentTodoPath = filePath
+  return fs.readJSON(filePath, { encoding: 'utf8' })
+})
+ipcMain.handle('saveTodo', (_event, data) => {
+  fs.writeJSON(currentTodoPath, data, (err) => {
     if (err) return console.log(err)
   })
 })

@@ -1,18 +1,19 @@
 /* eslint-disable react/prop-types */
 import { FaFileMedical, FaFolder, FaFolderPlus, FaNoteSticky, FaRotate } from 'react-icons/fa6'
 import { useEffect, useState } from 'react'
-import NotesExplorerItem from './NotesExplorerItem'
+import SidebarMenuItem from './SidebarMenuItem'
 
 function NotesExplorer({
   currentNotePath,
   updateCurrentNotePath,
   updateHideDirCreate,
-  updateHideNoteCreate
+  updateHideNoteCreate,
+  handleEditor
 }): JSX.Element {
   const [dirTree, updateDirTree] = useState({ name: '', path: '', type: '', children: [] })
 
   const getDirTree = (): void => {
-    window.context.mapDir().then((result) => {
+    window.context.getNotesDirTree().then((result) => {
       updateDirTree(result)
     })
   }
@@ -37,9 +38,9 @@ function NotesExplorer({
         result = (
           <>
             {result}
-            <NotesExplorerItem style={style}>
-              <FaFolder /> {child.name}
-            </NotesExplorerItem>
+            <SidebarMenuItem style={style} text={child.name}>
+              <FaFolder className="flex-shrink-0" />
+            </SidebarMenuItem>
             {mapDir(child)}
           </>
         )
@@ -48,14 +49,16 @@ function NotesExplorer({
         result = (
           <>
             {result}
-            <NotesExplorerItem
+            <SidebarMenuItem
               style={child.path === currentNotePath ? activeStyle : style}
               onClick={() => {
                 updateCurrentNotePath(child.path)
+                handleEditor('noteEditor')
               }}
+              text={child.name.slice(0, child.name.search(/\.md/))}
             >
-              <FaNoteSticky /> {child.name.slice(0, child.name.search(/\.md/))}
-            </NotesExplorerItem>
+              <FaNoteSticky className="flex-shrink-0" />
+            </SidebarMenuItem>
           </>
         )
       }
@@ -64,8 +67,16 @@ function NotesExplorer({
     return result
   }
 
+  // const mappedDir = (): JSX.Element => {
+  //   let result
+  //   setInterval(() => {
+  //     result = mapDir(dirTree)
+  //   }, 500)
+  //   return result
+  // }
+
   return (
-    <div className="w-56 flex flex-col border-l bg-neutral-900 border-neutral-100/5 pe-1 h-[calc(100vh-2.5rem)]">
+    <>
       <div className="flex items-center justify-between gap-3 p-3 text-lg">
         <p className="overflow-hidden text-ellipsis whitespace-nowrap">
           {dirTree.name.toUpperCase()}
@@ -73,9 +84,7 @@ function NotesExplorer({
         <div className="flex gap-3 *:flex-shrink-0 items-center">
           <FaFileMedical
             className="hover:opacity-75 active:opacity-100"
-            onClick={() => {
-              updateHideNoteCreate(false)
-            }}
+            onClick={() => updateHideNoteCreate(false)}
           />
           <FaFolderPlus
             className="hover:opacity-75 active:opacity-100"
@@ -84,10 +93,10 @@ function NotesExplorer({
           <FaRotate className="hover:opacity-75 active:opacity-100" onClick={getDirTree} />
         </div>
       </div>
-      <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700 active:scrollbar-thumb-neutral-600">
+      <div className="flex-shrink overflow-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700 active:scrollbar-thumb-neutral-600">
         {mapDir(dirTree)}
       </div>
-    </div>
+    </>
   )
 }
 

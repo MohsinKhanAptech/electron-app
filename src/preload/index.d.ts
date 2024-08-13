@@ -11,11 +11,15 @@ declare global {
       getCurrentDir
       handleDirSelect
       handleDirSubmit
-      mapDir
+      getNotesDirTree
       createNote
       createDir
       openNote
       saveNote
+      getTodosDirTree
+      createTodo
+      openTodo
+      saveTodo
       git: {
         setup
         init

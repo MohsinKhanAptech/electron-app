@@ -65,7 +65,7 @@ import {
 } from 'ckeditor5'
 import 'ckeditor5/ckeditor5.css'
 
-export default function Ckeditor({ currentNotePath }): JSX.Element {
+export default function NoteEditor({ currentNotePath }): JSX.Element {
   const [currentNoteContents, setCurrentNoteContents] = useState('')
   const updateCurrentNoteContents = () => {
     window.context.openNote(currentNotePath).then((result) => {
@@ -276,7 +276,7 @@ export default function Ckeditor({ currentNotePath }): JSX.Element {
       }
     },
     autosave: {
-      watingTime: 1000,
+      watingTime: 500,
       save(editor) {
         window.context.saveNote(editor.getData())
       }
@@ -288,14 +288,6 @@ export default function Ckeditor({ currentNotePath }): JSX.Element {
     editor.setData(currentNoteContents)
   }
 
-  if (currentNotePath === '') {
-    return (
-      <div className="flex flex-col items-center justify-center w-full h-full gap-2">
-        <h2 className="text-5xl">Welcome!</h2>
-        <div className="">Please Select a File to Continue</div>
-      </div>
-    )
-  }
   if (currentNoteContents === '') {
     return (
       <div className="flex flex-col items-center justify-center w-full h-full">

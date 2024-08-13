@@ -27,8 +27,8 @@ try {
     handleDirSubmit: (dirName) => {
       ipcRenderer.send('handleDirSubmit', dirName)
     },
-    mapDir: () => {
-      return ipcRenderer.invoke('mapDir')
+    getNotesDirTree: () => {
+      return ipcRenderer.invoke('getNotesDirTree')
     },
     createNote: (fileName) => {
       ipcRenderer.invoke('createNote', fileName)
@@ -39,8 +39,20 @@ try {
     openNote: (filePath) => {
       return ipcRenderer.invoke('openNote', filePath)
     },
-    saveNote: (noteData) => {
-      ipcRenderer.invoke('saveNote', noteData)
+    saveNote: (data) => {
+      ipcRenderer.invoke('saveNote', data)
+    },
+    getTodosDirTree: () => {
+      return ipcRenderer.invoke('getTodosDirTree')
+    },
+    createTodo: (fileName) => {
+      ipcRenderer.invoke('createTodo', fileName)
+    },
+    openTodo: (filePath) => {
+      return ipcRenderer.invoke('openTodo', filePath)
+    },
+    saveTodo: (data) => {
+      ipcRenderer.invoke('saveTodo', data)
     },
     git: {
       setup: () => ipcRenderer.invoke('gitSetup'),

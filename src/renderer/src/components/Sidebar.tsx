@@ -14,8 +14,12 @@ import { classMerge } from '@renderer/utils'
 function Sidebar({
   hideDirSelect,
   updateHideDirSelect,
+  hideSidebarMenu,
+  updateHideSidebarMenu,
   hideNotesExplorer,
   updateHideNotesExplorer,
+  hideTodoSidebarMenu,
+  updateHideTodoSidebarMenu,
   hideGitMenu,
   updateHideGitMenu,
   hideAddRemoteMenu,
@@ -27,9 +31,28 @@ function Sidebar({
   const openMenu = (menu): void => {
     switch (menu) {
       case 'noteExplorer':
-        updateHideNotesExplorer(!hideNotesExplorer)
-        updateHideDirSelect(true)
-        updateHideGitMenu(true)
+        if (hideNotesExplorer === false) {
+          updateHideSidebarMenu(true)
+          updateHideNotesExplorer(true)
+        } else {
+          updateHideSidebarMenu(false)
+          updateHideNotesExplorer(false)
+          updateHideTodoSidebarMenu(true)
+          updateHideDirSelect(true)
+          updateHideGitMenu(true)
+        }
+        break
+      case 'todoMenu':
+        if (hideTodoSidebarMenu === false) {
+          updateHideSidebarMenu(true)
+          updateHideTodoSidebarMenu(true)
+        } else {
+          updateHideSidebarMenu(false)
+          updateHideTodoSidebarMenu(false)
+          updateHideNotesExplorer(true)
+          updateHideDirSelect(true)
+          updateHideGitMenu(true)
+        }
         break
       case 'gitMenu':
         if (remoteURL === '') {
@@ -43,8 +66,6 @@ function Sidebar({
         break
       case 'dirSelect':
         updateHideDirSelect(!hideDirSelect)
-        updateHideNotesExplorer(true)
-        updateHideGitMenu(true)
         break
     }
   }
@@ -60,10 +81,10 @@ function Sidebar({
         <SidebarItem onClick={() => openMenu('noteExplorer')}>
           <FaNoteSticky />
         </SidebarItem>
-        <SidebarItem>
+        <SidebarItem onClick={() => openMenu('todoMenu')}>
           <FaListCheck />
         </SidebarItem>
-        <SidebarItem>
+        <SidebarItem onClick={() => openMenu('calendar')}>
           <FaCalendarDays />
         </SidebarItem>
         <SidebarItem onClick={() => openMenu('gitMenu')}>
@@ -74,7 +95,7 @@ function Sidebar({
         <SidebarItem onClick={() => openMenu('dirSelect')}>
           <FaFolder />
         </SidebarItem>
-        <SidebarItem>
+        <SidebarItem onClick={() => openMenu('settingsMenu')}>
           <FaGear />
         </SidebarItem>
       </ul>
