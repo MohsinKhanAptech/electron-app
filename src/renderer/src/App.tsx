@@ -16,8 +16,8 @@ import TodoEditorContainer from './components/TodoEditorContainer'
 
 function App(): JSX.Element {
   const [hideDirSelect, updateHideDirSelect] = useState()
-  const [hideSidebarMenu, updateHideHideSidebarMenu] = useState(false)
-  const [hideNotesExplorer, updateHideNotesExplorer] = useState(false)
+  const [hideSidebarMenu, updateHideHideSidebarMenu] = useState(true)
+  const [hideNotesExplorer, updateHideNotesExplorer] = useState(true)
   const [hideDirCreate, updateHideDirCreate] = useState(true)
   const [hideNoteCreate, updateHideNoteCreate] = useState(true)
   const [currentNotePath, updateCurrentNotePath] = useState('')

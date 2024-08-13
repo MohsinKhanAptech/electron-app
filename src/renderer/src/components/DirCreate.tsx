@@ -44,7 +44,7 @@ function DirCreate({ updateHideDirCreate }): JSX.Element {
       >
         <p className="text-xl">Select Directory Name</p>
         <p className="flex-grow-0 overflow-hidden text-ellipsis whitespace-nowrap">
-          Dir: {workingDir + '/' + dirName}
+          Dir: {workingDir + (navigator.platform === 'win32' ? '\\' : '/') + dirName}
         </p>
         <div className="flex flex-grow gap-2">
           <input

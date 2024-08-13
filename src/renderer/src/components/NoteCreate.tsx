@@ -43,7 +43,10 @@ function NoteCreate({ updateHideNoteCreate }): JSX.Element {
         className="flex flex-col gap-3 p-8 px-10 rounded min-w-96 bg-neutral-900"
       >
         <p className="text-xl">Select File Name</p>
-        <p className="">Dir: {workingDir + '/' + fileName + '.md'}</p>
+        <p className="">
+          {/* Dir: {workingDir + '/' + fileName + '.md'} */}
+          Dir: {workingDir + (navigator.platform === 'win32' ? '\\' : '/') + fileName + '.md'}
+        </p>
         <div className="flex flex-grow gap-2">
           <input
             type="text"
