@@ -8,6 +8,8 @@ function TodoEditorContainer({ currentTodoPath }): JSX.Element {
 
   const [currentTodoListContents, setCurrentTodoListContents] = useState([])
 
+  const [isNewTodo, setIsNewTodo] = useState(false)
+
   const updateCurrentTodoListContents = (): void => {
     window.context.openTodo(currentTodoPath).then((result) => {
       setCurrentTodoListContents(result)
@@ -20,12 +22,21 @@ function TodoEditorContainer({ currentTodoPath }): JSX.Element {
   }, [])
 
   if (!hideTodoEditor) {
-    return <TodoEditor updateHideTodoEditor={updateHideTodoEditor} />
+    return (
+      <TodoEditor
+        updateHideTodoEditor={updateHideTodoEditor}
+        isNewTodo={isNewTodo}
+        setIsNewTodo={setIsNewTodo}
+        currentTodoListContents={currentTodoListContents}
+        setCurrentTodoListContents={setCurrentTodoListContents}
+      />
+    )
   } else {
     return (
       <TodoList
         currentTodoListContents={currentTodoListContents}
         updateHideTodoEditor={updateHideTodoEditor}
+        setIsNewTodo={setIsNewTodo}
       />
     )
   }
