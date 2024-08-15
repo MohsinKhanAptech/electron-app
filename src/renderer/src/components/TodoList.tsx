@@ -11,11 +11,11 @@ function TodoList({ currentTodoListContents, updateHideTodoEditor, setIsNewTodo 
 
   const mapTodoContents = (): JSX.Element => {
     let todoContents: JSX.Element = <></>
-    currentTodoListContents.forEach((todo) => {
+    currentTodoListContents.forEach((todo, index, array) => {
       todoContents = (
         <>
           {todoContents}
-          <TodoListItem todoContent={todo} />
+          <TodoListItem todoContent={todo} index={index} todoListContent={array} />
         </>
       )
     })

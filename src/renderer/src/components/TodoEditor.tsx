@@ -14,7 +14,7 @@ function TodoEditor({
   let todoDate: string
   const todoSubTodo = [
     {
-      isComplete: false,
+      isCompleted: false,
       note: ''
     }
   ]
@@ -88,7 +88,7 @@ function TodoEditor({
       ></textarea>
       <div className="flex items-center gap-2 p-4 rounded-md bg-neutral-900">
         <input
-          onChange={(element) => (todoSubTodo[0].isComplete = element.currentTarget.checked)}
+          onChange={(element) => (todoSubTodo[0].isCompleted = element.currentTarget.checked)}
           type="checkbox"
           className="size-4 accent-neutral-500"
         />
