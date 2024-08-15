@@ -43,7 +43,9 @@ function TodoCreate({ updateHideTodoCreate }): JSX.Element {
         className="flex flex-col gap-3 p-8 px-10 rounded min-w-96 bg-neutral-900"
       >
         <p className="text-xl">Select Category Name</p>
-        <p className="">Dir: {workingDir + '/' + fileName}</p>
+        <p className="">
+          Dir: {workingDir + (navigator.platform === 'Win32' ? '\\' : '/') + fileName}
+        </p>
         <div className="flex flex-grow gap-2">
           <input
             type="text"
