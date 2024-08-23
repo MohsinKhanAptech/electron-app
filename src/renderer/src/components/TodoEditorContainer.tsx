@@ -2,9 +2,12 @@
 import { useEffect, useState } from 'react'
 import TodoList from './TodoList'
 import TodoEditor from './TodoEditor'
+import TodoViewer from './TodoViewer'
 
 function TodoEditorContainer({ currentTodoPath }): JSX.Element {
   const [hideTodoEditor, updateHideTodoEditor] = useState(true)
+  const [hideTodoViewer, updateHideTodoViewer] = useState(true)
+  const [todoViewContent, updateTodoViewContent] = useState()
 
   const [currentTodoListContents, setCurrentTodoListContents] = useState([])
 
@@ -29,6 +32,17 @@ function TodoEditorContainer({ currentTodoPath }): JSX.Element {
         setIsNewTodo={setIsNewTodo}
         currentTodoListContents={currentTodoListContents}
         setCurrentTodoListContents={setCurrentTodoListContents}
+        todoViewContent={todoViewContent}
+      />
+    )
+  } else if (!hideTodoViewer) {
+    return (
+      <TodoViewer
+        updateHideTodoViewer={updateHideTodoViewer}
+        updateHideTodoEditor={updateHideTodoEditor}
+        todoViewContent={todoViewContent}
+        updateTodoViewContent={updateTodoViewContent}
+        todoListContent={currentTodoListContents}
       />
     )
   } else {
@@ -36,6 +50,8 @@ function TodoEditorContainer({ currentTodoPath }): JSX.Element {
       <TodoList
         currentTodoListContents={currentTodoListContents}
         updateHideTodoEditor={updateHideTodoEditor}
+        updateHideTodoViewer={updateHideTodoViewer}
+        updateTodoViewContent={updateTodoViewContent}
         setIsNewTodo={setIsNewTodo}
       />
     )

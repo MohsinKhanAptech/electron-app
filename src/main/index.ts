@@ -153,6 +153,12 @@ fs.readJSON(appDataPath, (err, obj) => {
     appDataFile = obj
     workingDir = appDataFile.recentDir
     gitSetup()
+    fs.ensureDir(workingDir + '/Notes', (err) => {
+      if (err) return console.log(err)
+    })
+    fs.ensureDir(workingDir + '/Todos', (err) => {
+      if (err) return console.log(err)
+    })
   }
 })
 
@@ -207,7 +213,7 @@ ipcMain.handle('createNote', (_event, fileName) => {
   })
 })
 ipcMain.handle('createDir', (_event, dirName) => {
-  const dirPath = workingDir + '/' + dirName
+  const dirPath = workingDir + '/Notes/' + dirName
   fs.ensureDir(dirPath, (err) => {
     if (err) return console.log(err)
   })
@@ -244,7 +250,8 @@ ipcMain.handle('getTodosDirTree', () => {
 //     ],
 //     tags: [],
 //     priority: '',
-//     assignedDate: '',
+//     startDate: '',
+//     endDate: '',
 //     createdAt: '',
 //     updatedAt: '',
 //     conpletedAt: ''

@@ -1,35 +1,61 @@
 /* eslint-disable react/prop-types */
-import { FaFilter, FaPlus, FaRotate } from 'react-icons/fa6'
+import {
+  FaArrowDownShortWide,
+  FaArrowDownWideShort,
+  FaFilter,
+  FaPlus,
+  FaRotate
+} from 'react-icons/fa6'
 import TodoListItem from './TodoListItem'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-function TodoList({ currentTodoListContents, updateHideTodoEditor, setIsNewTodo }): JSX.Element {
+function TodoList({
+  currentTodoListContents,
+  updateHideTodoEditor,
+  updateHideTodoViewer,
+  updateTodoViewContent,
+  setIsNewTodo
+}): JSX.Element {
+  const [todoListContents, updateTodoListContents] = useState(<></>)
+
+  const [sortAscending, updateSortAscending] = useState(false)
+
   const addNewTodo = (): void => {
     setIsNewTodo(true)
     updateHideTodoEditor(false)
   }
 
-  const mapTodoContents = (): JSX.Element => {
+  const mapTodoContents = (update: boolean = false): JSX.Element => {
     let todoContents: JSX.Element = <></>
-    currentTodoListContents.forEach((todo, index, array) => {
+    const currentList = currentTodoListContents
+    if (!sortAscending) currentList.reverse()
+    currentList.forEach((todo, index) => {
       todoContents = (
         <>
           {todoContents}
-          <TodoListItem todoContent={todo} index={index} todoListContent={array} />
+          <TodoListItem
+            todoContent={todo}
+            index={index}
+            todoListContent={currentTodoListContents}
+            updateHideTodoViewer={updateHideTodoViewer}
+            updateTodoViewContent={updateTodoViewContent}
+          />
         </>
       )
     })
+    if (update === true) updateTodoListContents(todoContents)
     return todoContents
   }
 
   useEffect(() => {
     if (currentTodoListContents.length > 0) {
+      updateTodoListContents(currentTodoListContents)
       mapTodoContents()
     }
   }, [])
 
   return (
-    <div className="flex flex-col gap-5 p-5">
+    <div key={todoListContents + ''} className="flex flex-col gap-5 p-5">
       <div className="flex items-center gap-3 text-xl justify-end *:bg-neutral-900">
         <div
           onClick={addNewTodo}
@@ -45,7 +71,19 @@ function TodoList({ currentTodoListContents, updateHideTodoEditor, setIsNewTodo 
         <span className="flex-shrink-0 p-2 rounded-md cursor-pointer hover:bg-neutral-800 active:bg-neutral-900">
           <FaFilter />
         </span>
-        <span className="flex-shrink-0 p-2 rounded-md cursor-pointer hover:bg-neutral-800 active:bg-neutral-900">
+        <span
+          className="flex-shrink-0 p-2 rounded-md cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+          onClick={() => {
+            updateSortAscending(!sortAscending)
+            mapTodoContents()
+          }}
+        >
+          {sortAscending ? <FaArrowDownWideShort /> : <FaArrowDownShortWide />}
+        </span>
+        <span
+          className="flex-shrink-0 p-2 rounded-md cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+          onClick={() => mapTodoContents(true)}
+        >
           <FaRotate />
         </span>
       </div>

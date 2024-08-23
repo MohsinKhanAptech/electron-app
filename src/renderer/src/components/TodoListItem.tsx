@@ -2,7 +2,14 @@
 import { classMerge } from '@renderer/utils'
 import React, { useEffect } from 'react'
 
-function TodoListItem({ todoContent, index, todoListContent, ...props }): JSX.Element {
+function TodoListItem({
+  todoContent,
+  index,
+  todoListContent,
+  updateHideTodoViewer,
+  updateTodoViewContent,
+  ...props
+}): JSX.Element {
   const mapSubTodo = (): JSX.Element => {
     let subTodo
     todoContent.subTodo.forEach((element, subIndex) => {
@@ -26,18 +33,28 @@ function TodoListItem({ todoContent, index, todoListContent, ...props }): JSX.El
     return subTodo
   }
 
-  const formatDate = (): string => {
-    const date = new Date(todoContent.assignedDate)
+  const formatDate = (timestamp): string => {
+    const date = new Date(timestamp)
     return date.toLocaleString()
   }
 
   const handleTodoComplete = (event: React.FormEvent<HTMLInputElement>): void => {
     todoListContent[index].isCompleted = event.currentTarget.checked
+    todoListContent[index].updatedAt = event.timeStamp
+    if (event.currentTarget.checked) todoListContent[index].conpletedAt = event.timeStamp
     window.context.saveTodo(todoListContent)
   }
   const handleSubTodoComplete = (event: React.FormEvent<HTMLInputElement>, subIndex): void => {
     todoListContent[index].subTodo[subIndex].isCompleted = event.currentTarget.checked
+    todoListContent[index].updatedAt = event.timeStamp
+    if (event.currentTarget.checked) todoListContent[index].conpletedAt = event.timeStamp
     window.context.saveTodo(todoListContent)
+  }
+
+  const handleTodoView = (event): void => {
+    if (event.target.localName === 'input') return
+    updateTodoViewContent(todoContent)
+    updateHideTodoViewer(false)
   }
 
   useEffect(() => {
@@ -47,6 +64,7 @@ function TodoListItem({ todoContent, index, todoListContent, ...props }): JSX.El
   return (
     <div
       className={classMerge('flex flex-col gap-3 rounded-md p-5 bg-neutral-900', props.className)}
+      onClick={handleTodoView}
     >
       <div className="flex items-center gap-2">
         <input
@@ -58,7 +76,9 @@ function TodoListItem({ todoContent, index, todoListContent, ...props }): JSX.El
         <h3 className="overflow-hidden text-3xl font-medium whitespace-nowrap text-ellipsis">
           {todoContent.title}
         </h3>
-        <span className="ms-auto text-neutral-500">{formatDate()}</span>
+        <span className="ms-auto text-neutral-500">
+          {formatDate(todoContent.startDate)} - {formatDate(todoContent.startDate)}
+        </span>
       </div>
       {todoContent.note === '' || !todoContent.note ? null : (
         <div>
