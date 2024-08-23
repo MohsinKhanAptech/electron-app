@@ -276,7 +276,7 @@ export default function NoteEditor({ currentNotePath }): JSX.Element {
       }
     },
     autosave: {
-      watingTime: 500,
+      watingTime: 100,
       save(editor) {
         window.context.saveNote(editor.getData())
       }
