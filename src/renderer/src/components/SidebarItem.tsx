@@ -6,7 +6,7 @@ function SidebarItem({ ...props }): JSX.Element {
     <li>
       <a
         className={classMerge(
-          'block p-3 cursor-pointer drag-none hover:opacity-75 active:opacity-100',
+          'block p-3 cursor-pointer drag-none hover:opacity-75 active:opacity-50',
           props.className
         )}
         onClick={props.onClick}

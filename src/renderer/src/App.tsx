@@ -13,6 +13,7 @@ import TodoCreate from './components/TodoCreate'
 import MainWindowContainer from './components/MainWindowContainer'
 import NoteEditor from './components/NoteEditor'
 import TodoEditorContainer from './components/TodoEditorContainer'
+import Calendar from './components/Calendar'
 
 function App(): JSX.Element {
   const [hideDirSelect, updateHideDirSelect] = useState(true)
@@ -24,6 +25,7 @@ function App(): JSX.Element {
   const [hideTodoSidebarMenu, updateHideTodoSidebarMenu] = useState(true)
   const [hideTodoCreate, updateHideTodoCreate] = useState(true)
   const [currentTodoPath, updateCurrentTodoPath] = useState('')
+  const [hideCalendar, updateHideCalendar] = useState(true)
   const [hideGitMenu, updateHideGitMenu] = useState(true)
   const [hideAddRemoteMenu, updateHideAddRemoteMenu] = useState(true)
   const [remoteURL, updateRemoteURL] = useState('')
@@ -56,9 +58,16 @@ function App(): JSX.Element {
       case 'noteEditor':
         updateHideNoteEditor(false)
         updateHideTodoEditor(true)
+        updateHideCalendar(true)
         break
       case 'todoEditor':
         updateHideTodoEditor(false)
+        updateHideNoteEditor(true)
+        updateHideCalendar(true)
+        break
+      case 'calendar':
+        updateHideCalendar(false)
+        updateHideTodoEditor(true)
         updateHideNoteEditor(true)
         break
     }
@@ -109,6 +118,7 @@ function App(): JSX.Element {
           updateHideAddRemoteMenu={updateHideAddRemoteMenu}
           remoteURL={remoteURL}
           updateRemoteURL={updateRemoteURL}
+          handleEditor={handleEditor}
         />
         {hideSidebarMenu ? null : (
           <SidebarMenu>
@@ -140,12 +150,13 @@ function App(): JSX.Element {
         )}
         <MainWindowContainer>
           {hideNoteEditor ? null : (
-            <NoteEditor key={currentNotePath} currentNotePath={currentNotePath}></NoteEditor>
+            <NoteEditor key={currentNotePath} currentNotePath={currentNotePath} />
           )}
           {hideTodoEditor ? null : (
             <TodoEditorContainer key={currentTodoPath} currentTodoPath={currentTodoPath} />
           )}
-          {hideNoteEditor && hideTodoEditor ? (
+          {hideCalendar ? null : <Calendar key={currentTodoPath} />}
+          {hideNoteEditor && hideTodoEditor && hideCalendar ? (
             <div className="flex flex-col items-center justify-center w-full h-full gap-2">
               <h2 className="text-5xl">Welcome!</h2>
               <div className="">Please Select a File to Continue</div>

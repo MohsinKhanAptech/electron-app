@@ -20,6 +20,7 @@ function Sidebar({
   updateHideNotesExplorer,
   hideTodoSidebarMenu,
   updateHideTodoSidebarMenu,
+  handleEditor,
   hideGitMenu,
   updateHideGitMenu,
   hideAddRemoteMenu,
@@ -53,6 +54,14 @@ function Sidebar({
           updateHideDirSelect(true)
           updateHideGitMenu(true)
         }
+        break
+      case 'calendar':
+        handleEditor('calendar')
+        updateHideSidebarMenu(true)
+        updateHideNotesExplorer(true)
+        updateHideTodoSidebarMenu(true)
+        updateHideDirSelect(true)
+        updateHideGitMenu(true)
         break
       case 'gitMenu':
         if (hideGitMenu === false) {
