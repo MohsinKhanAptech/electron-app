@@ -15,7 +15,7 @@ import NoteEditor from './components/NoteEditor'
 import TodoEditorContainer from './components/TodoEditorContainer'
 
 function App(): JSX.Element {
-  const [hideDirSelect, updateHideDirSelect] = useState()
+  const [hideDirSelect, updateHideDirSelect] = useState(true)
   const [hideSidebarMenu, updateHideHideSidebarMenu] = useState(true)
   const [hideNotesExplorer, updateHideNotesExplorer] = useState(true)
   const [hideDirCreate, updateHideDirCreate] = useState(true)
@@ -69,11 +69,14 @@ function App(): JSX.Element {
     window.context.git.setup()
     getRemotes()
     const getRemotesInterval = setInterval(() => {
-      getRemotes()
-    }, 2500)
+      if (hideDirSelect) {
+        getRemotes()
+        clearInterval(getRemotesInterval)
+      }
+    }, 3000)
     setTimeout(() => {
       clearInterval(getRemotesInterval)
-    }, 10000)
+    }, 15000)
   }, [])
 
   return (
@@ -126,7 +129,13 @@ function App(): JSX.Element {
                 handleEditor={handleEditor}
               />
             )}
-            {hideGitMenu ? null : <GitMenu />}
+            {hideGitMenu ? null : (
+              <GitMenu
+                remoteURL={remoteURL}
+                updateHideAddRemoteMenu={updateHideAddRemoteMenu}
+                getRemotes={getRemotes}
+              />
+            )}
           </SidebarMenu>
         )}
         <MainWindowContainer>

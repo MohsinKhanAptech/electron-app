@@ -58,7 +58,9 @@ try {
       setup: () => ipcRenderer.invoke('gitSetup'),
       init: () => ipcRenderer.invoke('gitInit'),
       branch: () => ipcRenderer.invoke('gitBranch'),
-      status: () => ipcRenderer.invoke('gitStatus'),
+      status: () => {
+        return ipcRenderer.invoke('gitStatus')
+      },
       add: () => ipcRenderer.invoke('gitAdd'),
       addRemote: (remoteURL) => ipcRenderer.invoke('gitAddRemote', remoteURL),
       listRemote: () => {
@@ -68,7 +70,7 @@ try {
         return ipcRenderer.invoke('gitGetRemotes')
       },
       commit: () => ipcRenderer.invoke('gitCommit'),
-      push: () => ipcRenderer.invoke('gitPush'),
+      push: (option) => ipcRenderer.invoke('gitPush', option),
       pull: () => ipcRenderer.invoke('gitPull'),
       sync: () => ipcRenderer.invoke('gitSync')
     }

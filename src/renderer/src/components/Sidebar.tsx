@@ -55,14 +55,16 @@ function Sidebar({
         }
         break
       case 'gitMenu':
-        if (remoteURL === '') {
-          updateHideAddRemoteMenu(false)
-          break
-        }
-        updateHideGitMenu(false)
-        setTimeout(() => {
+        if (hideGitMenu === false) {
           updateHideGitMenu(true)
-        }, 2500)
+          updateHideSidebarMenu(true)
+        } else {
+          updateHideGitMenu(false)
+          updateHideSidebarMenu(false)
+          updateHideTodoSidebarMenu(true)
+          updateHideNotesExplorer(true)
+          updateHideDirSelect(true)
+        }
         break
       case 'dirSelect':
         updateHideDirSelect(!hideDirSelect)

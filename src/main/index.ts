@@ -104,31 +104,31 @@ ipcMain.on('window-close', () => {
 })
 
 // get app path
-const appPath = app.getAppPath()
+// const appPath = app.getAppPath()
 
-//get app setting path
-const appSettingsPath = appPath + '/appSettings.json'
+// //get app setting path
+// const appSettingsPath = appPath + '/appSettings.json'
 
-// declare appsettings file
-let appSettignsFile = { test: 'test' }
+// // declare appsettings file
+// let appSettignsFile = { test: 'test' }
 
-//* ensure appsettings.json file is created
-fs.readJSON(appSettingsPath, (err, obj) => {
-  // create file if it doesnt exist
-  if (err && err[1] === -2) {
-    fs.ensureFile(appSettingsPath, (err) => {
-      if (err) return console.log(err)
-      fs.writeJSON(appSettingsPath, appSettignsFile, (err) => {
-        if (err) return console.log(err)
-      })
-    })
-  }
-  if (err && err[1] !== -2) return console.log(err)
+// //* ensure appsettings.json file is created
+// fs.readJSON(appSettingsPath, (err, obj) => {
+//   // create file if it doesnt exist
+//   if (err && err[1] === -2) {
+//     fs.ensureFile(appSettingsPath, (err) => {
+//       if (err) return console.log(err)
+//       fs.writeJSON(appSettingsPath, appSettignsFile, (err) => {
+//         if (err) return console.log(err)
+//       })
+//     })
+//   }
+//   if (err && err[1] !== -2) return console.log(err)
 
-  if (obj !== appDataFile) {
-    appSettignsFile = obj
-  }
-})
+//   if (obj !== appDataFile) {
+//     appSettignsFile = obj
+//   }
+// })
 
 // get appData path
 const appDataPath = app.getPath('appData') + '/B-Project/appData.json'
@@ -307,6 +307,7 @@ ipcMain.handle('gitStatus', () => {
   git.status((err, result) => {
     if (err) return console.log(err)
     console.log(result)
+    return result
   })
 })
 
@@ -360,15 +361,15 @@ ipcMain.handle('gitCommit', () => {
   })
 })
 
-ipcMain.handle('gitPush', () => {
-  git.push(['--set-upstream', 'origin', 'main'], (err, result) => {
+ipcMain.handle('gitPush', (_event, option = '--verbose') => {
+  git.push(['--set-upstream', 'origin', 'main', option], (err, result) => {
     if (err) return console.log(err)
     console.log(result)
   })
 })
 
 ipcMain.handle('gitPull', () => {
-  git.pull(['--rebase=true', 'origin', 'main'], (err, result) => {
+  git.pull(['origin', 'main'], (err, result) => {
     if (err) return console.log(err)
     console.log(result)
   })
