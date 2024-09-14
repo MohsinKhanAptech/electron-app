@@ -71,7 +71,7 @@ try {
       },
       commit: () => ipcRenderer.invoke('gitCommit'),
       push: (option) => ipcRenderer.invoke('gitPush', option),
-      pull: () => ipcRenderer.invoke('gitPull'),
+      pull: (force) => ipcRenderer.invoke('gitPull', force),
       sync: () => ipcRenderer.invoke('gitSync')
     }
   })

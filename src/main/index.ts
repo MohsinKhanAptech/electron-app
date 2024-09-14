@@ -368,7 +368,18 @@ ipcMain.handle('gitPush', (_event, option = '--verbose') => {
   })
 })
 
-ipcMain.handle('gitPull', () => {
+ipcMain.handle('gitPull', (_event, force = false) => {
+  if (force) {
+    git
+      .fetch([], (err, result) => {
+        if (err) return console.log(err)
+        console.log(result)
+      })
+      .reset(['--hard'], (err, result) => {
+        if (err) return console.log(err)
+        console.log(result)
+      })
+  }
   git.pull(['origin', 'main'], (err, result) => {
     if (err) return console.log(err)
     console.log(result)

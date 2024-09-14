@@ -12,11 +12,28 @@ import {
 function GitMenu({ remoteURL, updateHideAddRemoteMenu, getRemotes }): JSX.Element {
   useEffect(() => {
     getRemotes()
-    // window.context.git.sync()
   }, [])
 
   if (remoteURL === '') {
-    updateHideAddRemoteMenu(false)
+    return (
+      <>
+        <div className="flex items-center justify-between gap-3 p-3 text-lg">
+          <p className="overflow-hidden text-ellipsis whitespace-nowrap">Git</p>
+          <div className="flex gap-3 *:flex-shrink-0 items-center">
+            <FaRotate className="hover:opacity-75 active:opacity-100" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-3 p-2 *:bg-neutral-800">
+          <div
+            className="flex items-center *:shrink-0 justify-center flex-grow gap-2 p-2 rounded hover:bg-neutral-700 active:bg-neutral-800"
+            onClick={() => updateHideAddRemoteMenu(false)}
+          >
+            <FaCloudArrowUp className="size-5" />
+            <span>Set Remote</span>
+          </div>
+        </div>
+      </>
+    )
   }
 
   return (
@@ -76,6 +93,13 @@ function GitMenu({ remoteURL, updateHideAddRemoteMenu, getRemotes }): JSX.Elemen
         >
           <FaCodeMerge className="size-5" />
           <span>Pull</span>
+        </div>
+        <div
+          className="flex items-center *:shrink-0 justify-center flex-grow gap-2 p-2 rounded hover:bg-neutral-700 active:bg-neutral-800"
+          onClick={() => window.context.git.pull(true)}
+        >
+          <FaCodeMerge className="size-5" />
+          <span>Force Pull</span>
         </div>
       </div>
       <div className="flex-shrink overflow-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700 active:scrollbar-thumb-neutral-600"></div>
