@@ -11,12 +11,18 @@ function TodoListItem({
   ...props
 }): JSX.Element {
   const mapSubTodo = (): JSX.Element => {
-    let subTodo
+    if (
+      (todoContent.subTodo.length === 1 && !todoContent.subTodo[0].note) ||
+      todoContent.subTodo.length === 0
+    ) {
+      return <></>
+    }
+    let result
     todoContent.subTodo.forEach((element, subIndex) => {
       if (element.note !== '') {
-        subTodo = (
-          <div className="pt-3 overflow-hidden border-t text-ellipsis border-neutral-800 whitespace-nowrap">
-            {subTodo}
+        result = (
+          <>
+            {result}
             <div className="flex items-center gap-2">
               <input
                 className="overflow-hidden accent-neutral-500 size-4 whitespace-nowrap text-ellipsis"
@@ -26,11 +32,37 @@ function TodoListItem({
               />
               <p>{element.note}</p>
             </div>
-          </div>
+          </>
         )
       }
     })
-    return subTodo
+    return (
+      <div className="pt-3 overflow-hidden border-t text-ellipsis border-neutral-800 whitespace-nowrap">
+        {result}
+      </div>
+    )
+  }
+
+  const mapTags = (): JSX.Element => {
+    if ((todoContent.tags.length === 1 && !todoContent.tags[0]) || todoContent.tags.length === 0) {
+      return <></>
+    }
+    let result
+    todoContent.tags.forEach((tag) => {
+      if (tag !== '') {
+        result = (
+          <>
+            {result}
+            <div className="p-2 px-3 rounded-full bg-neutral-800">{tag}</div>
+          </>
+        )
+      }
+    })
+    return (
+      <div className="flex flex-wrap gap-2 pt-3 border-t border-neutral-800 bg-neutral-900">
+        {result}
+      </div>
+    )
   }
 
   const formatDate = (timestamp): string => {
@@ -63,7 +95,7 @@ function TodoListItem({
 
   return (
     <div
-      className={classMerge('flex flex-col gap-3 rounded-md p-5 bg-neutral-900', props.className)}
+      className={classMerge('flex flex-col gap-3 rounded-md p-6 bg-neutral-900', props.className)}
       onClick={handleTodoView}
     >
       <div className="flex items-center gap-2">
@@ -77,7 +109,9 @@ function TodoListItem({
           {todoContent.title}
         </h3>
         <span className="ms-auto text-neutral-500">
-          {formatDate(todoContent.startDate)} - {formatDate(todoContent.startDate)}
+          {todoContent.startDate || todoContent.endDate
+            ? formatDate(todoContent.startDate) + ' - ' + formatDate(todoContent.endDate)
+            : null}
         </span>
       </div>
       {todoContent.note === '' || !todoContent.note ? null : (
@@ -85,6 +119,7 @@ function TodoListItem({
           <p className="text-ellipsis line-clamp-2">{todoContent.note}</p>
         </div>
       )}
+      {mapTags()}
       {mapSubTodo()}
     </div>
   )

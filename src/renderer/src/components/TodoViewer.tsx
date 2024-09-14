@@ -26,14 +26,17 @@ function TodoEditor({
   const tags = (): JSX.Element => {
     let result
     todoViewContent.tags.forEach((tag) => {
-      result = (
-        <div className="p-2 px-3 rounded-full bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-800">
-          {tag}
-        </div>
-      )
+      if (tag !== '') {
+        result = (
+          <>
+            {result}
+            <div className="p-2 px-3 rounded-full bg-neutral-800">{tag}</div>
+          </>
+        )
+      }
     })
-    if (todoViewContent.tags.length > 0) {
-      return <div className="flex gap-2 p-4 rounded-md bg-neutral-900">{result}</div>
+    if (result) {
+      return <div className="flex flex-wrap gap-2 p-4 rounded-md bg-neutral-900">{result}</div>
     }
     return <></>
   }
@@ -43,15 +46,18 @@ function TodoEditor({
     todoViewContent.subTodo.forEach((subTodo, subIndex) => {
       if (subTodo.note !== '') {
         result = (
-          <div className="flex items-center gap-2 p-4 rounded-md bg-neutral-900">
-            <input
-              type="checkbox"
-              className="size-4 accent-neutral-500"
-              defaultChecked={subTodo.isCompleted}
-              onChange={(event) => handleSubTodoComplete(event, subIndex)}
-            />
-            <p className="flex-grow rounded-md bg-neutral-900">{subTodo.note}</p>
-          </div>
+          <>
+            {result}
+            <div className="flex items-center gap-2 p-4 rounded-md bg-neutral-900">
+              <input
+                type="checkbox"
+                className="size-4 accent-neutral-500"
+                defaultChecked={subTodo.isCompleted}
+                onChange={(event) => handleSubTodoComplete(event, subIndex)}
+              />
+              <p className="flex-grow rounded-md bg-neutral-900">{subTodo.note}</p>
+            </div>
+          </>
         )
       }
     })
@@ -72,7 +78,12 @@ function TodoEditor({
         </button>
         <button
           className="flex-shrink-0 p-2 rounded-md cursor-pointer bg-neutral-900 hover:bg-neutral-800 active:bg-neutral-900"
-          onClick={() => console.log('delete todo | MSG from TodoViewer')}
+          onClick={() => {
+            todoListContent.splice(index, 1)
+            window.context.saveTodo(todoListContent)
+            updateHideTodoViewer(true)
+            updateTodoViewContent('')
+          }}
         >
           <FaTrash />
         </button>
@@ -96,8 +107,12 @@ function TodoEditor({
         <h3>{todoViewContent.title}</h3>
       </div>
       <div className="flex gap-4 *:flex-grow text-center">
-        <p className="p-4 rounded-md bg-neutral-900">{formatDate(todoViewContent.startDate)}</p>
-        <p className="p-4 rounded-md bg-neutral-900">{formatDate(todoViewContent.endDate)}</p>
+        {todoViewContent.startDate || todoViewContent.endDate ? (
+          <>
+            <p className="p-4 rounded-md bg-neutral-900">{formatDate(todoViewContent.startDate)}</p>
+            <p className="p-4 rounded-md bg-neutral-900">{formatDate(todoViewContent.endDate)}</p>
+          </>
+        ) : null}
       </div>
       {tags()}
       {todoViewContent.note === '' || todoViewContent === null || !todoViewContent.note ? null : (

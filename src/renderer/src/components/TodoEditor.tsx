@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
-import { FormEvent } from 'react'
-import { FaCheck, FaChevronLeft, FaPlus } from 'react-icons/fa6'
+import { FormEvent, useEffect, useState } from 'react'
+import { FaCheck, FaChevronLeft, FaPlus, FaXmark } from 'react-icons/fa6'
 
 function TodoEditor({
   updateHideTodoEditor,
@@ -10,47 +11,22 @@ function TodoEditor({
   setCurrentTodoListContents,
   todoViewContent
 }): JSX.Element {
-  let todoTitle: string = ''
-  let todoNote: string = ''
-  let todoStartDate: string = ''
-  let todoEndDate: string = ''
-  let todoSubTodo = [
-    {
-      isCompleted: false,
-      note: ''
+  const [todoTitle, setTodoTitle] = useState('')
+  const [todoNote, setTodoNote] = useState('')
+  const [todoTags, setTodoTags] = useState([''])
+  const [todoStartDate, setTodoStartDate] = useState('')
+  const [todoEndDate, setTodoEndDate] = useState('')
+  const [todoSubTodo, setTodoSubTodo] = useState([{ isCompleted: false, note: '' }])
+  useEffect(() => {
+    if (!isNewTodo) {
+      setTodoTitle(todoViewContent.title)
+      setTodoNote(todoViewContent.note)
+      setTodoTags(todoViewContent.tags)
+      setTodoStartDate(todoViewContent.startDate)
+      setTodoEndDate(todoViewContent.endDate)
+      if (todoViewContent.subTodo) setTodoSubTodo(todoViewContent.subTodo)
     }
-  ]
-  if (!isNewTodo) {
-    todoTitle = todoViewContent.title
-    todoNote = todoViewContent.note
-    todoStartDate = todoViewContent.startDate
-    todoEndDate = todoViewContent.endDate
-    if (todoViewContent.subTodo) todoSubTodo = todoViewContent.subTodo
-  }
-
-  const subTodo = (): JSX.Element => {
-    let result
-    todoSubTodo.forEach((subTodo, index) => {
-      result = (
-        <div className="flex items-center gap-2 p-4 rounded-md bg-neutral-900">
-          <input
-            type="checkbox"
-            className="size-4 accent-neutral-500"
-            defaultChecked={subTodo.isCompleted}
-            onChange={(element) => (todoSubTodo[index].isCompleted = element.currentTarget.checked)}
-          />
-          <input
-            type="text"
-            className="flex-grow border-none rounded-md outline-none text-ellipsis bg-neutral-900"
-            placeholder="Sub Task"
-            defaultValue={subTodo.note}
-            onChange={(element) => (todoSubTodo[index].note = element.currentTarget.value)}
-          />
-        </div>
-      )
-    })
-    return result
-  }
+  }, [])
 
   const handleSubmit = (event: FormEvent): void => {
     event.preventDefault()
@@ -59,7 +35,7 @@ function TodoEditor({
       title: todoTitle,
       note: todoNote,
       subTodo: todoSubTodo,
-      tags: [],
+      tags: todoTags,
       priority: '',
       startDate: todoStartDate,
       endDate: todoEndDate,
@@ -67,19 +43,110 @@ function TodoEditor({
       updatedAt: event.timeStamp,
       conpletedAt: ''
     }
+    todo.subTodo.forEach((element, index) => {
+      if (!element.note) todo.subTodo.splice(index, 1)
+    })
+    const updatedTodoList = currentTodoListContents
     if (isNewTodo) {
-      const updatedTodoList: Array<object> = currentTodoListContents
       updatedTodoList.push(todo)
-      setCurrentTodoListContents(updatedTodoList)
-      window.context.saveTodo(updatedTodoList)
-      setIsNewTodo(false)
+    } else {
+      const index = currentTodoListContents.indexOf(todoViewContent)
+      updatedTodoList[index] = todo
     }
-    const updatedTodoList: Array<object> = currentTodoListContents
-    const index = currentTodoListContents.indexOf(todoViewContent)
-    updatedTodoList[index] = todo
     setCurrentTodoListContents(updatedTodoList)
     window.context.saveTodo(updatedTodoList)
+    setIsNewTodo(false)
     updateHideTodoEditor(true)
+  }
+
+  const tagWrapper = (text): JSX.Element => {
+    return (
+      <div className="flex items-center gap-1.5 p-1 rounded-full bg-neutral-800">
+        <span className="ps-3">{text}</span>
+        <span
+          className="p-2 rounded-full hover:bg-neutral-700"
+          onClick={() => {
+            const _todoTags = todoTags
+            _todoTags.splice(todoTags.indexOf(text), 1)
+            setTodoTags([..._todoTags])
+          }}
+        >
+          <FaXmark />
+        </span>
+      </div>
+    )
+  }
+
+  const addTag = (text = ''): void => {
+    if (text !== '') setTodoTags([...todoTags, text])
+  }
+
+  const mapCurrentTags = (): JSX.Element => {
+    let result
+    todoTags.forEach((tag) => {
+      if (tag !== '') {
+        result = (
+          <>
+            {result}
+            {tagWrapper(tag)}
+          </>
+        )
+      }
+    })
+    return result
+  }
+
+  const mapTags = (): JSX.Element => {
+    let result
+    todoTags.forEach((tag) => {
+      if (tag !== '') {
+        result = (
+          <>
+            {result}
+            <div
+              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+              onClick={() => {}}
+            >
+              {tag}
+            </div>
+          </>
+        )
+      }
+    })
+    return result
+  }
+
+  const subTodo = (): JSX.Element => {
+    let result
+    todoSubTodo.forEach((subTodo: any, index) => {
+      result = (
+        <>
+          {result}
+          <div className="flex items-center gap-2 p-4 rounded-md bg-neutral-900">
+            <input
+              type="checkbox"
+              className="size-4 accent-neutral-500"
+              defaultChecked={subTodo.isCompleted}
+              onChange={(element) =>
+                (todoSubTodo[index].isCompleted = element.currentTarget.checked)
+              }
+            />
+            <input
+              type="text"
+              className="flex-grow border-none rounded-md outline-none text-ellipsis bg-neutral-900"
+              placeholder="Sub Task"
+              defaultValue={subTodo.note}
+              onChange={(element) => (todoSubTodo[index].note = element.currentTarget.value)}
+            />
+          </div>
+        </>
+      )
+    })
+    return result
+  }
+
+  const addSubTodo = (): void => {
+    setTodoSubTodo([...todoSubTodo, { isCompleted: false, note: '' }])
   }
 
   return (
@@ -100,7 +167,7 @@ function TodoEditor({
         </button>
       </div>
       <input
-        onChange={(element) => (todoTitle = element.currentTarget.value)}
+        onChange={(element) => setTodoTitle(element.currentTarget.value)}
         type="text"
         className="p-4 text-3xl font-medium border-none rounded-md outline-none text-ellipsis bg-neutral-900"
         placeholder="Title"
@@ -109,36 +176,111 @@ function TodoEditor({
       />
       <div className="flex gap-4 *:flex-grow">
         <input
-          onChange={(element) => (todoStartDate = element.currentTarget.value)}
+          onChange={(element) => setTodoStartDate(element.currentTarget.value)}
           className="p-4 border-none rounded-md outline-none bg-neutral-200 text-neutral-900 invert"
           type="datetime-local"
           defaultValue={todoStartDate}
         />
         <input
-          onChange={(element) => (todoEndDate = element.currentTarget.value)}
+          onChange={(element) => setTodoEndDate(element.currentTarget.value)}
           className="p-4 border-none rounded-md outline-none bg-neutral-200 text-neutral-900 invert"
           type="datetime-local"
           defaultValue={todoEndDate}
         />
       </div>
-      <div className="flex gap-2 p-4 border-none rounded-md outline-none bg-neutral-900">
-        <div className="p-2 px-3 rounded-full bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-800">
-          #hiee
-        </div>
-        <div className="flex items-center gap-0.5 text-neutral-400 p-2 px-3 rounded-full bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-800">
+      <div className="flex flex-wrap gap-2 p-4 border-none rounded-md outline-none bg-neutral-900">
+        {mapCurrentTags()}
+        <div
+          className="flex items-center gap-0.5 text-neutral-400 p-2 px-3 rounded-full bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-800"
+          onClick={() => document.getElementById('tagsDropdown')?.classList.toggle('hidden')}
+        >
           <FaPlus /> Add Tag
+          <div
+            id="tagsDropdown"
+            className="absolute flex flex-col flex-shrink-0 hidden overflow-y-auto translate-y-[60%] border rounded -translate-x-1/4 bg-neutral-900 border-neutral-800 max-h-60 scrollbar-thin"
+          >
+            <div
+              className="flex rounded-md m-2 hover:bg-neutral-700 text-nowrap items-center p-2 px-4 cursor-pointer bg-neutral-800 gap-0.5"
+              onClick={() => {}}
+            >
+              <FaPlus /> Create New Tag
+            </div>
+            <div
+              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+              onClick={(e) => {
+                addTag('Work')
+                e.stopPropagation()
+                document.getElementById('tagsDropdown')?.classList.add('hidden')
+              }}
+            >
+              Work
+            </div>
+            <div
+              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+              onClick={(e) => {
+                addTag('Personal')
+                e.stopPropagation()
+                document.getElementById('tagsDropdown')?.classList.add('hidden')
+              }}
+            >
+              Personal
+            </div>
+            <div
+              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+              onClick={(e) => {
+                addTag('Fun')
+                e.stopPropagation()
+                document.getElementById('tagsDropdown')?.classList.add('hidden')
+              }}
+            >
+              Fun
+            </div>
+            <div
+              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+              onClick={(e) => {
+                addTag('Note')
+                e.stopPropagation()
+                document.getElementById('tagsDropdown')?.classList.add('hidden')
+              }}
+            >
+              Note
+            </div>
+            <div
+              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+              onClick={(e) => {
+                addTag('Todo')
+                e.stopPropagation()
+                document.getElementById('tagsDropdown')?.classList.add('hidden')
+              }}
+            >
+              Todo
+            </div>
+            <div
+              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+              onClick={(e) => {
+                addTag('Assignment')
+                e.stopPropagation()
+                document.getElementById('tagsDropdown')?.classList.add('hidden')
+              }}
+            >
+              Assignment
+            </div>
+            {mapTags()}
+          </div>
         </div>
       </div>
       <textarea
-        onChange={(element) => (todoNote = element.currentTarget.value)}
+        onChange={(element) => setTodoNote(element.currentTarget.value)}
         className="flex-grow flex-shrink-0 p-4 border-none rounded-md outline-none resize-y bg-neutral-900 scrollbar-thin"
         placeholder="Note"
-        rows={4}
-      >
-        {todoNote}
-      </textarea>
+        rows={6}
+        defaultValue={todoNote}
+      ></textarea>
       {subTodo()}
-      <div className="flex items-center justify-center gap-2 p-4 border-4 border-dashed rounded-md cursor-pointer text-neutral-500 border-neutral-900 hover:border-solid hover:bg-neutral-900 active:bg-transparent">
+      <div
+        className="flex items-center justify-center gap-2 p-4 border-4 border-dashed rounded-md cursor-pointer text-neutral-500 border-neutral-900 hover:border-solid hover:bg-neutral-900 active:bg-transparent"
+        onClick={addSubTodo}
+      >
         <FaPlus /> Add Sub-Tasks
       </div>
     </form>

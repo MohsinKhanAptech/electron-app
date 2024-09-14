@@ -103,10 +103,8 @@ function App(): JSX.Element {
       )}
       <div className="flex flex-grow h-[calc(100vh-2.5rem)]">
         <Sidebar
-          className="flex-shrink-0"
           hideDirSelect={hideDirSelect}
           updateHideDirSelect={updateHideDirSelect}
-          hideSidebarMenu={hideSidebarMenu}
           updateHideSidebarMenu={updateHideHideSidebarMenu}
           hideNotesExplorer={hideNotesExplorer}
           updateHideNotesExplorer={updateHideNotesExplorer}
@@ -114,10 +112,6 @@ function App(): JSX.Element {
           updateHideTodoSidebarMenu={updateHideTodoSidebarMenu}
           hideGitMenu={hideGitMenu}
           updateHideGitMenu={updateHideGitMenu}
-          hideAddRemoteMenu={hideAddRemoteMenu}
-          updateHideAddRemoteMenu={updateHideAddRemoteMenu}
-          remoteURL={remoteURL}
-          updateRemoteURL={updateRemoteURL}
           handleEditor={handleEditor}
         />
         {hideSidebarMenu ? null : (
