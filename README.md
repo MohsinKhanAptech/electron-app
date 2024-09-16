@@ -1,10 +1,16 @@
-# electron-app
+# Paper
 
-An Electron application with React and TypeScript
+A Note taking / todos App
+built on Electron with React, TypeScript, Tailwind and more.
+
+## Note
+
+Some features that are in testing are not yet push to github
 
 ## Prerequisites
 
 - [Git](https://git-scm.com/)
+- [git setup](#git-setup)
 
 ## Recommended IDE Setup
 
