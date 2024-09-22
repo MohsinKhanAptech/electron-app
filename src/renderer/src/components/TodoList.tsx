@@ -16,23 +16,24 @@ function TodoList({
   updateTodoViewContent,
   setIsNewTodo
 }): JSX.Element {
-  const [todoListContents, updateTodoListContents] = useState(<></>)
-
-  const [sortAscending, updateSortAscending] = useState(false)
+  const [refresh, setRefresh] = useState(false)
+  const [sortReverse, setSortReverse] = useState(false)
 
   const addNewTodo = (): void => {
     setIsNewTodo(true)
     updateHideTodoEditor(false)
   }
 
-  const mapTodoContents = (update: boolean = false): JSX.Element => {
-    let todoContents: JSX.Element = <></>
-    const currentList = currentTodoListContents
-    if (!sortAscending) currentList.reverse()
-    currentList.forEach((todo, index) => {
-      todoContents = (
+  const mapTodoContents = (): JSX.Element => {
+    let result = <></>
+
+    const _currentList = currentTodoListContents
+    _currentList.reverse()
+
+    _currentList.forEach((todo, index) => {
+      result = (
         <>
-          {todoContents}
+          {result}
           <TodoListItem
             todoContent={todo}
             index={index}
@@ -43,19 +44,14 @@ function TodoList({
         </>
       )
     })
-    if (update === true) updateTodoListContents(todoContents)
-    return todoContents
+
+    return result
   }
 
-  useEffect(() => {
-    if (currentTodoListContents.length > 0) {
-      updateTodoListContents(currentTodoListContents)
-      mapTodoContents()
-    }
-  }, [])
+  useEffect(() => {}, [])
 
   return (
-    <div key={todoListContents + ''} className="flex flex-col gap-5 p-5">
+    <div className="flex flex-col gap-5 p-5">
       <div className="flex items-center gap-3 text-xl justify-end *:bg-neutral-900">
         <div
           onClick={addNewTodo}
@@ -74,15 +70,15 @@ function TodoList({
         <span
           className="flex-shrink-0 p-2 rounded-md cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
           onClick={() => {
-            updateSortAscending(!sortAscending)
+            setSortReverse(!sortReverse)
             mapTodoContents()
           }}
         >
-          {sortAscending ? <FaArrowDownWideShort /> : <FaArrowDownShortWide />}
+          {sortReverse ? <FaArrowDownWideShort /> : <FaArrowDownShortWide />}
         </span>
         <span
           className="flex-shrink-0 p-2 rounded-md cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
-          onClick={() => mapTodoContents(true)}
+          onClick={() => setRefresh(!refresh)}
         >
           <FaRotate />
         </span>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/prop-types */
 import {
   FaCalendarDays,
@@ -9,12 +8,10 @@ import {
   FaNoteSticky
 } from 'react-icons/fa6'
 import SidebarItem from './SidebarItem'
-import { classMerge } from '@renderer/utils'
 
 function Sidebar({
   hideDirSelect,
   updateHideDirSelect,
-  hideSidebarMenu,
   updateHideSidebarMenu,
   hideNotesExplorer,
   updateHideNotesExplorer,
@@ -22,12 +19,7 @@ function Sidebar({
   updateHideTodoSidebarMenu,
   handleEditor,
   hideGitMenu,
-  updateHideGitMenu,
-  hideAddRemoteMenu,
-  updateHideAddRemoteMenu,
-  remoteURL,
-  updateRemoteURL,
-  ...props
+  updateHideGitMenu
 }): JSX.Element {
   const openMenu = (menu): void => {
     switch (menu) {
@@ -82,12 +74,7 @@ function Sidebar({
   }
 
   return (
-    <nav
-      className={classMerge(
-        'flex flex-col justify-between h-full overflow-hidden text-2xl bg-neutral-900',
-        props.className
-      )}
-    >
+    <nav className="flex flex-col justify-between flex-shrink-0 h-full overflow-hidden text-2xl bg-neutral-900">
       <ul className="flex flex-col">
         <SidebarItem onClick={() => openMenu('noteExplorer')}>
           <FaNoteSticky />

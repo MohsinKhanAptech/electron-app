@@ -197,7 +197,7 @@ function TodoEditor({
           <FaPlus /> Add Tag
           <div
             id="tagsDropdown"
-            className="absolute flex flex-col flex-shrink-0 hidden overflow-y-auto translate-y-[60%] border rounded -translate-x-1/4 bg-neutral-900 border-neutral-800 max-h-60 scrollbar-thin"
+            className="absolute flex flex-col flex-shrink-0 hidden overflow-y-auto translate-y-[60%] border rounded-md -translate-x-1/4 bg-neutral-900 border-neutral-800 max-h-60 scrollbar-thin"
           >
             <div
               className="flex rounded-md m-2 hover:bg-neutral-700 text-nowrap items-center p-2 px-4 cursor-pointer bg-neutral-800 gap-0.5"
@@ -234,36 +234,6 @@ function TodoEditor({
               }}
             >
               Fun
-            </div>
-            <div
-              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
-              onClick={(e) => {
-                addTag('Note')
-                e.stopPropagation()
-                document.getElementById('tagsDropdown')?.classList.add('hidden')
-              }}
-            >
-              Note
-            </div>
-            <div
-              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
-              onClick={(e) => {
-                addTag('Todo')
-                e.stopPropagation()
-                document.getElementById('tagsDropdown')?.classList.add('hidden')
-              }}
-            >
-              Todo
-            </div>
-            <div
-              className="p-2 px-4 cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
-              onClick={(e) => {
-                addTag('Assignment')
-                e.stopPropagation()
-                document.getElementById('tagsDropdown')?.classList.add('hidden')
-              }}
-            >
-              Assignment
             </div>
             {mapTags()}
           </div>
