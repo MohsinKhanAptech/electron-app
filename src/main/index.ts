@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import fs from 'fs-extra'
@@ -101,6 +102,7 @@ ipcMain.on('window-maximize', () => {
 ipcMain.on('window-close', () => {
   const window = BrowserWindow.getFocusedWindow()
   window?.close()
+  app.exit()
 })
 
 // get app path
@@ -137,9 +139,9 @@ const appDataPath = app.getPath('appData') + '/B-Project/appData.json'
 let appDataFile = { recentDir: '' }
 
 // read appdata file
-fs.readJSON(appDataPath, (err, obj) => {
+fs.readJSON(appDataPath, (err: any, obj) => {
   // create file if it doesnt exist
-  if (err && err[1] === -2) {
+  if (err && err.errno === -2) {
     fs.ensureFile(appDataPath, (err) => {
       if (err) return console.log(err)
       fs.writeJSON(appDataPath, appDataFile, (err) => {
@@ -147,20 +149,31 @@ fs.readJSON(appDataPath, (err, obj) => {
       })
     })
   }
-  if (err && err[1] !== -2) return console.log(err)
+
+  if (err && err.errno !== -2) return console.log(err)
 
   if (obj !== appDataFile) {
     appDataFile = obj
     workingDir = appDataFile.recentDir
-    gitSetup()
+    setupWorkingDir()
+  }
+})
+
+const setupWorkingDir = (): void => {
+  fs.ensureDir(workingDir, (err) => {
+    if (err) return console.log(err)
     fs.ensureDir(workingDir + '/Notes', (err) => {
       if (err) return console.log(err)
     })
     fs.ensureDir(workingDir + '/Todos', (err) => {
       if (err) return console.log(err)
     })
-  }
-})
+  })
+  fs.writeJSON(appDataPath, appDataFile, (err) => {
+    if (err) return console.log(err)
+  })
+  gitSetup()
+}
 
 ipcMain.handle('recentDirExists', () => {
   return appDataFile.recentDir === '' ? false : true
@@ -180,19 +193,7 @@ ipcMain.handle('getCurrentDir', () => {
 ipcMain.on('handleDirSubmit', (_event, dirName: string) => {
   dirName ? (workingDir += '/' + dirName) : workingDir
   appDataFile.recentDir = workingDir
-  fs.ensureDir(workingDir, (err) => {
-    if (err) return console.log(err)
-    fs.ensureDir(workingDir + '/Notes', (err) => {
-      if (err) return console.log(err)
-    })
-    fs.ensureDir(workingDir + '/Todos', (err) => {
-      if (err) return console.log(err)
-    })
-  })
-  fs.writeJSON(appDataPath, appDataFile, (err) => {
-    if (err) return console.log(err)
-  })
-  gitSetup()
+  setupWorkingDir()
 })
 
 let dirTree
@@ -237,26 +238,7 @@ ipcMain.handle('getTodosDirTree', () => {
   })
   return dirTree
 })
-// const todoTemplate = [
-//   {
-//     isCompleted: false,
-//     title: '',
-//     note: '',
-//     subTodo: [
-//       {
-//         isCompleted: false,
-//         note: ''
-//       }
-//     ],
-//     tags: [],
-//     priority: '',
-//     startDate: '',
-//     endDate: '',
-//     createdAt: '',
-//     updatedAt: '',
-//     conpletedAt: ''
-//   }
-// ]
+
 ipcMain.handle('createTodo', (_event, fileName) => {
   const filePath = workingDir + '/Todos/' + fileName + '.json'
   fs.ensureFile(filePath, (err) => {
