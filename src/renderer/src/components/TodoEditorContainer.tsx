@@ -4,7 +4,7 @@ import TodoList from './TodoList'
 import TodoEditor from './TodoEditor'
 import TodoViewer from './TodoViewer'
 
-function TodoEditorContainer({ currentTodoPath }): JSX.Element {
+function TodoEditorContainer({ currentTodoPath, popupMenuConstructor }): JSX.Element {
   const [hideTodoEditor, updateHideTodoEditor] = useState(true)
   const [hideTodoViewer, updateHideTodoViewer] = useState(true)
   const [todoViewContent, updateTodoViewContent] = useState()
@@ -33,6 +33,7 @@ function TodoEditorContainer({ currentTodoPath }): JSX.Element {
         currentTodoListContents={currentTodoListContents}
         setCurrentTodoListContents={setCurrentTodoListContents}
         todoViewContent={todoViewContent}
+        popupMenuConstructor={popupMenuConstructor}
       />
     )
   } else if (!hideTodoViewer) {

@@ -9,7 +9,8 @@ function TodoEditor({
   setIsNewTodo,
   currentTodoListContents,
   setCurrentTodoListContents,
-  todoViewContent
+  todoViewContent,
+  popupMenuConstructor
 }): JSX.Element {
   const [todoTitle, setTodoTitle] = useState('')
   const [todoNote, setTodoNote] = useState('')
@@ -149,6 +150,11 @@ function TodoEditor({
     setTodoSubTodo([...todoSubTodo, { isCompleted: false, note: '' }])
   }
 
+  const displayPopupMenu = (): void => {
+    popupMenuConstructor(true, true, 'Enter Tag Name', '', true, popupMenuSubmitFunc)
+  }
+  const popupMenuSubmitFunc = (inp): void => console.log(inp)
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col h-full gap-5 p-5">
       <div className="flex items-center gap-3 text-xl">
@@ -200,8 +206,8 @@ function TodoEditor({
             className="absolute flex flex-col flex-shrink-0 hidden overflow-y-auto translate-y-[60%] border rounded-md -translate-x-1/4 bg-neutral-900 border-neutral-800 max-h-60 scrollbar-thin"
           >
             <div
-              className="flex rounded-md m-2 hover:bg-neutral-700 text-nowrap items-center p-2 px-4 cursor-pointer bg-neutral-800 gap-0.5"
-              onClick={() => {}}
+              className="flex rounded m-2 hover:bg-neutral-700 text-nowrap items-center p-2 px-4 cursor-pointer bg-neutral-800 gap-0.5"
+              onClick={displayPopupMenu}
             >
               <FaPlus /> Create New Tag
             </div>

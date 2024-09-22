@@ -14,6 +14,7 @@ import MainWindowContainer from './components/MainWindowContainer'
 import NoteEditor from './components/NoteEditor'
 import TodoEditorContainer from './components/TodoEditorContainer'
 import Calendar from './components/Calendar'
+import PopupMenu from './components/PopupMenu'
 
 function App(): JSX.Element {
   const [hideDirSelect, updateHideDirSelect] = useState(true)
@@ -73,6 +74,29 @@ function App(): JSX.Element {
     }
   }
 
+  const [popupMenu, updatePopupMenu] = useState(<></>)
+  const popupMenuConstructor = (
+    showAccept: boolean = true,
+    showCancel: boolean = true,
+    title: string,
+    message: string = '',
+    showInputField: boolean,
+    onSubmit: VoidFunction
+  ): void => {
+    const result = (
+      <PopupMenu
+        showAccept={showAccept}
+        showCancel={showCancel}
+        title={title}
+        message={message}
+        showInputField={showInputField}
+        onSubmit={onSubmit}
+      />
+    )
+    console.log(result)
+    updatePopupMenu(result)
+  }
+
   useEffect(() => {
     checkRecentDir()
     window.context.git.setup()
@@ -91,6 +115,7 @@ function App(): JSX.Element {
   return (
     <div className="flex flex-col h-full">
       <Titlebar />
+      {popupMenu}
       {hideDirSelect ? null : <DirSelect updateHideDirSelect={updateHideDirSelect} />}
       {hideDirCreate ? null : <DirCreate updateHideDirCreate={updateHideDirCreate} />}
       {hideNoteCreate ? null : <NoteCreate updateHideNoteCreate={updateHideNoteCreate} />}
@@ -147,7 +172,11 @@ function App(): JSX.Element {
             <NoteEditor key={currentNotePath} currentNotePath={currentNotePath} />
           )}
           {hideTodoEditor ? null : (
-            <TodoEditorContainer key={currentTodoPath} currentTodoPath={currentTodoPath} />
+            <TodoEditorContainer
+              key={currentTodoPath}
+              currentTodoPath={currentTodoPath}
+              popupMenuConstructor={popupMenuConstructor}
+            />
           )}
           {hideCalendar ? null : <Calendar key={currentTodoPath} />}
           {hideNoteEditor && hideTodoEditor && hideCalendar ? (
