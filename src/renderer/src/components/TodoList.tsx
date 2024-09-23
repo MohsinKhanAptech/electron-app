@@ -53,12 +53,14 @@ function TodoList({
   return (
     <div className="flex flex-col gap-5 p-5">
       <div className="flex items-center gap-3 text-xl justify-end *:bg-neutral-900">
-        <div
-          onClick={addNewTodo}
-          className="flex-shrink-0 p-2 rounded-md cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
-        >
-          <FaPlus />
-        </div>
+        {setIsNewTodo === undefined ? null : (
+          <div
+            onClick={addNewTodo}
+            className="flex-shrink-0 p-2 rounded-md cursor-pointer hover:bg-neutral-800 active:bg-neutral-900"
+          >
+            <FaPlus />
+          </div>
+        )}
         <input
           type="text"
           className="flex-grow p-2 text-sm rounded-md outline-none"
@@ -86,13 +88,15 @@ function TodoList({
 
       {mapTodoContents()}
 
-      <div
-        onClick={addNewTodo}
-        className="flex items-center justify-center gap-1 p-10 border-4 border-dashed rounded-md cursor-pointer border-neutral-900 text-neutral-500 hover:border-solid hover:bg-neutral-900 active:bg-transparent"
-      >
-        <FaPlus />
-        <span>Add Todo</span>
-      </div>
+      {setIsNewTodo === undefined ? null : (
+        <div
+          onClick={addNewTodo}
+          className="flex items-center justify-center gap-1 p-10 border-4 border-dashed rounded-md cursor-pointer border-neutral-900 text-neutral-500 hover:border-solid hover:bg-neutral-900 active:bg-transparent"
+        >
+          <FaPlus />
+          <span>Add Todo</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,11 +1,26 @@
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from 'react'
 import { DayPicker } from 'react-day-picker'
-import { useState } from 'react'
+import { compareAsc, formatDate } from 'date-fns'
 import TodoList from './TodoList'
 
 import '@renderer/assets/Calendar.css'
 
-function Calendar(): JSX.Element {
-  const [selected, setSelected] = useState<Date>()
+function Calendar({ selected, setSelected, allTodos }): JSX.Element {
+  const [currentTodos, updateCurrentTodos] = useState(allTodos)
+
+  useEffect(() => {
+    if (selected) {
+      let result
+      allTodos.forEach((todo) => {
+        if (compareAsc(todo.startDate, selected) === 0) {
+          result.push(todo)
+        }
+      })
+      updateCurrentTodos(result)
+      console.log(currentTodos)
+    }
+  }, [])
 
   return (
     <div className="flex flex-col">
@@ -22,43 +37,10 @@ function Calendar(): JSX.Element {
         />
       </div>
       <div className="p-5 m-5 mb-1 text-2xl text-center rounded-md bg-neutral-900">
-        {selected ? `${selected.toLocaleDateString()}` : 'Pick a day.'}
+        {selected ? `${formatDate(selected, 'do MMM, yyyy - eeee')}` : 'Today.'}
       </div>
       <TodoList
-        currentTodoListContents={[
-          {
-            isCompleted: false,
-            title: 'test',
-            note: 'Practise for Javascript test',
-            subTodo: [
-              { isCompleted: false, note: 'Javascript' },
-              { isCompleted: false, note: 'AJAX' }
-            ],
-            tags: ['', 'Work'],
-            priority: '',
-            startDate: '2024-09-16T17:00',
-            endDate: '2024-09-16T20:00',
-            createdAt: 558576.5,
-            updatedAt: 558576.5,
-            conpletedAt: ''
-          },
-          {
-            isCompleted: false,
-            title: 'PHP Presentation',
-            note: ' ',
-            subTodo: [
-              { isCompleted: true, note: 'PHP' },
-              { isCompleted: false, note: 'Laravel' }
-            ],
-            tags: ['', 'Work'],
-            priority: '',
-            startDate: '2024-09-16T17:00',
-            endDate: '2024-09-16T17:00',
-            createdAt: 616682.599999994,
-            updatedAt: 616682.599999994,
-            conpletedAt: ''
-          }
-        ]}
+        currentTodoListContents={currentTodos}
         updateHideTodoEditor={undefined}
         updateHideTodoViewer={undefined}
         updateTodoViewContent={undefined}

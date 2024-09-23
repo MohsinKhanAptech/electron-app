@@ -97,7 +97,24 @@ function App(): JSX.Element {
     updatePopupMenu(result)
   }
 
+  const [selected, setSelected] = useState<Date>()
+  const [allTodos, updateAllTodos] = useState([{}])
+  const getAllTodos = (): void => {
+    console.log(allTodos)
+    let _temp: Array<object> = []
+    window.context.getTodosDirTree().then((todotree) => {
+      todotree.children.forEach((dir) => {
+        window.context.openTodo(dir.path).then((todos) => {
+          _temp = _temp.concat(todos)
+          console.log(_temp)
+          updateAllTodos(_temp)
+        })
+      })
+    })
+  }
+
   useEffect(() => {
+    getAllTodos()
     checkRecentDir()
     window.context.git.setup()
     getRemotes()
@@ -178,7 +195,14 @@ function App(): JSX.Element {
               popupMenuConstructor={popupMenuConstructor}
             />
           )}
-          {hideCalendar ? null : <Calendar key={currentTodoPath} />}
+          {hideCalendar ? null : (
+            <Calendar
+              key={currentTodoPath}
+              selected={selected}
+              setSelected={setSelected}
+              allTodos={allTodos}
+            />
+          )}
           {hideNoteEditor && hideTodoEditor && hideCalendar ? (
             <div className="flex flex-col items-center justify-center w-full h-full gap-2">
               <h2 className="text-5xl">Welcome!</h2>
