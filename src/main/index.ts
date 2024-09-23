@@ -168,6 +168,9 @@ const setupWorkingDir = (): void => {
     fs.ensureDir(workingDir + '/Todos', (err) => {
       if (err) return console.log(err)
     })
+    fs.ensureDir(workingDir + '/Drawings', (err) => {
+      if (err) return console.log(err)
+    })
   })
   fs.writeJSON(appDataPath, appDataFile, (err) => {
     if (err) return console.log(err)
@@ -195,6 +198,8 @@ ipcMain.on('handleDirSubmit', (_event, dirName: string) => {
   appDataFile.recentDir = workingDir
   setupWorkingDir()
 })
+
+//* notes handling
 
 let dirTree
 ipcMain.handle('getNotesDirTree', () => {
@@ -231,6 +236,8 @@ ipcMain.handle('saveNote', (_event, data) => {
   })
 })
 
+//* todos handling
+
 ipcMain.handle('getTodosDirTree', () => {
   dirTree = directoryTree(workingDir + '/Todos', {
     extensions: /\.json/,
@@ -258,6 +265,28 @@ ipcMain.handle('saveTodo', (_event, data) => {
     if (err) return console.log(err)
   })
 })
+
+//* drawings handling
+
+let drawingPath
+ipcMain.handle('openDrawing', () => {
+  drawingPath = workingDir + '/Drawings/drawing.json'
+  fs.ensureFile(drawingPath, (err) => {
+    if (err) return console.log(err)
+  })
+  return fs.readJSON(drawingPath, { encoding: 'utf8' })
+})
+ipcMain.handle('saveDrawing', (_event, data) => {
+  drawingPath = workingDir + '/Drawings/drawing.json'
+  fs.ensureFile(drawingPath, (err) => {
+    if (err) return console.log(err)
+    fs.writeJSON(drawingPath, data, (err) => {
+      if (err) return console.log(err)
+    })
+  })
+})
+
+//* git handling
 
 let gitOptions: Partial<SimpleGitOptions> = {}
 let git: SimpleGit

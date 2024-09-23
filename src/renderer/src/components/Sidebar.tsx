@@ -5,7 +5,8 @@ import {
   FaFolder,
   FaGear,
   FaListCheck,
-  FaNoteSticky
+  FaNoteSticky,
+  FaPencil
 } from 'react-icons/fa6'
 import SidebarItem from './SidebarItem'
 
@@ -55,6 +56,14 @@ function Sidebar({
         updateHideDirSelect(true)
         updateHideGitMenu(true)
         break
+      case 'excalidraw':
+        handleEditor('excalidraw')
+        updateHideSidebarMenu(true)
+        updateHideNotesExplorer(true)
+        updateHideTodoSidebarMenu(true)
+        updateHideDirSelect(true)
+        updateHideGitMenu(true)
+        break
       case 'gitMenu':
         if (hideGitMenu === false) {
           updateHideGitMenu(true)
@@ -84,6 +93,9 @@ function Sidebar({
         </SidebarItem>
         <SidebarItem onClick={() => openMenu('calendar')}>
           <FaCalendarDays />
+        </SidebarItem>
+        <SidebarItem onClick={() => openMenu('excalidraw')}>
+          <FaPencil />
         </SidebarItem>
         <SidebarItem onClick={() => openMenu('gitMenu')}>
           <FaCodeBranch />

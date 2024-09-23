@@ -24,6 +24,7 @@
     "@ckeditor/ckeditor5-react": "^8.0.0",
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "@excalidraw/excalidraw": "^0.17.6",
     "ckeditor5": "^42.0.2",
     "date-fns": "^3.6.0",
     "directory-tree": "^3.5.2",

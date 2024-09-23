@@ -15,6 +15,7 @@ import NoteEditor from './components/NoteEditor'
 import TodoEditorContainer from './components/TodoEditorContainer'
 import Calendar from './components/Calendar'
 import PopupMenu from './components/PopupMenu'
+import ExcalidrawEditor from './components/ExcalidrawEditor'
 
 function App(): JSX.Element {
   const [hideDirSelect, updateHideDirSelect] = useState(true)
@@ -27,6 +28,8 @@ function App(): JSX.Element {
   const [hideTodoCreate, updateHideTodoCreate] = useState(true)
   const [currentTodoPath, updateCurrentTodoPath] = useState('')
   const [hideCalendar, updateHideCalendar] = useState(true)
+  const [hideExcalidraw, updateHideExcalidraw] = useState(true)
+  const [excalidrawElements, setExcalidrawElements] = useState()
   const [hideGitMenu, updateHideGitMenu] = useState(true)
   const [hideAddRemoteMenu, updateHideAddRemoteMenu] = useState(true)
   const [remoteURL, updateRemoteURL] = useState('')
@@ -60,14 +63,23 @@ function App(): JSX.Element {
         updateHideNoteEditor(false)
         updateHideTodoEditor(true)
         updateHideCalendar(true)
+        updateHideExcalidraw(true)
         break
       case 'todoEditor':
         updateHideTodoEditor(false)
         updateHideNoteEditor(true)
         updateHideCalendar(true)
+        updateHideExcalidraw(true)
         break
       case 'calendar':
         updateHideCalendar(false)
+        updateHideTodoEditor(true)
+        updateHideNoteEditor(true)
+        updateHideExcalidraw(true)
+        break
+      case 'excalidraw':
+        updateHideExcalidraw(false)
+        updateHideCalendar(true)
         updateHideTodoEditor(true)
         updateHideNoteEditor(true)
         break
@@ -100,13 +112,13 @@ function App(): JSX.Element {
   const [selected, setSelected] = useState<Date>()
   const [allTodos, updateAllTodos] = useState([{}])
   const getAllTodos = (): void => {
-    console.log(allTodos)
+    // console.log(allTodos)
     let _temp: Array<object> = []
     window.context.getTodosDirTree().then((todotree) => {
       todotree.children.forEach((dir) => {
         window.context.openTodo(dir.path).then((todos) => {
           _temp = _temp.concat(todos)
-          console.log(_temp)
+          // console.log(_temp)
           updateAllTodos(_temp)
         })
       })
@@ -114,7 +126,6 @@ function App(): JSX.Element {
   }
 
   useEffect(() => {
-    getAllTodos()
     checkRecentDir()
     window.context.git.setup()
     getRemotes()
@@ -127,6 +138,14 @@ function App(): JSX.Element {
     setTimeout(() => {
       clearInterval(getRemotesInterval)
     }, 15000)
+
+    // get all todos
+    getAllTodos()
+
+    // get drawing
+    window.context.openDrawing().then((result) => {
+      setExcalidrawElements(result)
+    })
   }, [])
 
   return (
@@ -203,7 +222,8 @@ function App(): JSX.Element {
               allTodos={allTodos}
             />
           )}
-          {hideNoteEditor && hideTodoEditor && hideCalendar ? (
+          {hideExcalidraw ? null : <ExcalidrawEditor excalidrawElements={excalidrawElements} />}
+          {hideNoteEditor && hideTodoEditor && hideCalendar && hideExcalidraw ? (
             <div className="flex flex-col items-center justify-center w-full h-full gap-2">
               <h2 className="text-5xl">Welcome!</h2>
               <div className="">Please Select a File to Continue</div>

@@ -20,6 +20,8 @@ declare global {
       createTodo
       openTodo
       saveTodo
+      openDrawing
+      saveDrawing
       git: {
         setup
         init

@@ -54,6 +54,12 @@ try {
     saveTodo: (data) => {
       ipcRenderer.invoke('saveTodo', data)
     },
+    openDrawing: () => {
+      return ipcRenderer.invoke('openDrawing')
+    },
+    saveDrawing: (data) => {
+      ipcRenderer.invoke('saveDrawing', data)
+    },
     git: {
       setup: () => ipcRenderer.invoke('gitSetup'),
       init: () => ipcRenderer.invoke('gitInit'),
