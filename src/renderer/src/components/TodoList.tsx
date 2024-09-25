@@ -7,7 +7,7 @@ import {
   FaRotate
 } from 'react-icons/fa6'
 import TodoListItem from './TodoListItem'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 function TodoList({
   currentTodoListContents,
@@ -30,25 +30,25 @@ function TodoList({
     const _currentList = currentTodoListContents
     _currentList.reverse()
 
-    _currentList.forEach((todo, index) => {
-      result = (
-        <>
-          {result}
-          <TodoListItem
-            todoContent={todo}
-            index={index}
-            todoListContent={currentTodoListContents}
-            updateHideTodoViewer={updateHideTodoViewer}
-            updateTodoViewContent={updateTodoViewContent}
-          />
-        </>
-      )
-    })
+    if (_currentList <= 1 && Object.keys(_currentList[0]).length !== 0) {
+      _currentList.forEach((todo, index) => {
+        result = (
+          <>
+            {result}
+            <TodoListItem
+              todoContent={todo}
+              index={index}
+              todoListContent={currentTodoListContents}
+              updateHideTodoViewer={updateHideTodoViewer}
+              updateTodoViewContent={updateTodoViewContent}
+            />
+          </>
+        )
+      })
+    }
 
     return result
   }
-
-  useEffect(() => {}, [])
 
   return (
     <div className="flex flex-col gap-5 p-5">

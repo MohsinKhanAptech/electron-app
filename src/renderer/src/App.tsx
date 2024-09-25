@@ -112,13 +112,11 @@ function App(): JSX.Element {
   const [selected, setSelected] = useState<Date>()
   const [allTodos, updateAllTodos] = useState([{}])
   const getAllTodos = (): void => {
-    // console.log(allTodos)
     let _temp: Array<object> = []
     window.context.getTodosDirTree().then((todotree) => {
       todotree.children.forEach((dir) => {
         window.context.openTodo(dir.path).then((todos) => {
           _temp = _temp.concat(todos)
-          // console.log(_temp)
           updateAllTodos(_temp)
         })
       })
