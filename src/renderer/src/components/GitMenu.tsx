@@ -11,6 +11,7 @@ import {
 
 function GitMenu({ remoteURL, updateHideAddRemoteMenu, getRemotes }): JSX.Element {
   useEffect(() => {
+    window.context.git.init()
     getRemotes()
   }, [])
 
