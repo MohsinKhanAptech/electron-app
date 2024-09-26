@@ -54,8 +54,14 @@ try {
     saveTodo: (data) => {
       ipcRenderer.invoke('saveTodo', data)
     },
-    openDrawing: () => {
-      return ipcRenderer.invoke('openDrawing')
+    getDrawingsDirTree: () => {
+      return ipcRenderer.invoke('getDrawingsDirTree')
+    },
+    createDrawing: (fileName) => {
+      ipcRenderer.invoke('createDrawing', fileName)
+    },
+    openDrawing: (filePath) => {
+      return ipcRenderer.invoke('openDrawing', filePath)
     },
     saveDrawing: (data) => {
       ipcRenderer.invoke('saveDrawing', data)

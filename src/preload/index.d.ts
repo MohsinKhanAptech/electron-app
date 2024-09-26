@@ -20,6 +20,8 @@ declare global {
       createTodo
       openTodo
       saveTodo
+      getDrawingsDirTree
+      createDrawing
       openDrawing
       saveDrawing
       git: {

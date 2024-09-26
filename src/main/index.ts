@@ -268,21 +268,31 @@ ipcMain.handle('saveTodo', (_event, data) => {
 
 //* drawings handling
 
-let drawingPath
-ipcMain.handle('openDrawing', () => {
-  drawingPath = workingDir + '/Drawings/drawing.json'
-  fs.ensureFile(drawingPath, (err) => {
-    if (err) return console.log(err)
+ipcMain.handle('getDrawingsDirTree', () => {
+  dirTree = directoryTree(workingDir + '/Drawings', {
+    extensions: /\.json/,
+    attributes: ['type']
   })
-  return fs.readJSON(drawingPath, { encoding: 'utf8' })
+  return dirTree
 })
-ipcMain.handle('saveDrawing', (_event, data) => {
-  drawingPath = workingDir + '/Drawings/drawing.json'
-  fs.ensureFile(drawingPath, (err) => {
+
+ipcMain.handle('createDrawing', (_event, fileName) => {
+  const filePath = workingDir + '/Drawings/' + fileName + '.json'
+  fs.ensureFile(filePath, (err) => {
     if (err) return console.log(err)
-    fs.writeJSON(drawingPath, data, (err) => {
+    fs.writeJSON(filePath, [], (err) => {
       if (err) return console.log(err)
     })
+  })
+})
+let drawingPath
+ipcMain.handle('openDrawing', (_event, filePath) => {
+  drawingPath = filePath
+  return fs.readJSON(filePath, { encoding: 'utf8' })
+})
+ipcMain.handle('saveDrawing', (_event, data) => {
+  fs.writeJSON(drawingPath, data, (err) => {
+    if (err) return console.log(err)
   })
 })
 

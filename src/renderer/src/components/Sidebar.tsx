@@ -18,9 +18,11 @@ function Sidebar({
   updateHideNotesExplorer,
   hideTodoSidebarMenu,
   updateHideTodoSidebarMenu,
-  handleEditor,
+  hideExcalidrawMenu,
+  updateHideExcalidrawMenu,
   hideGitMenu,
-  updateHideGitMenu
+  updateHideGitMenu,
+  handleEditor
 }): JSX.Element {
   const openMenu = (menu): void => {
     switch (menu) {
@@ -33,6 +35,7 @@ function Sidebar({
           updateHideNotesExplorer(false)
           updateHideTodoSidebarMenu(true)
           updateHideDirSelect(true)
+          updateHideExcalidrawMenu(true)
           updateHideGitMenu(true)
         }
         break
@@ -45,6 +48,7 @@ function Sidebar({
           updateHideTodoSidebarMenu(false)
           updateHideNotesExplorer(true)
           updateHideDirSelect(true)
+          updateHideExcalidrawMenu(true)
           updateHideGitMenu(true)
         }
         break
@@ -54,15 +58,21 @@ function Sidebar({
         updateHideNotesExplorer(true)
         updateHideTodoSidebarMenu(true)
         updateHideDirSelect(true)
+        updateHideExcalidrawMenu(true)
         updateHideGitMenu(true)
         break
-      case 'excalidraw':
-        handleEditor('excalidraw')
-        updateHideSidebarMenu(true)
-        updateHideNotesExplorer(true)
-        updateHideTodoSidebarMenu(true)
-        updateHideDirSelect(true)
-        updateHideGitMenu(true)
+      case 'excalidrawMenu':
+        if (hideExcalidrawMenu === false) {
+          updateHideSidebarMenu(true)
+          updateHideExcalidrawMenu(true)
+        } else {
+          updateHideSidebarMenu(false)
+          updateHideExcalidrawMenu(false)
+          updateHideNotesExplorer(true)
+          updateHideTodoSidebarMenu(true)
+          updateHideDirSelect(true)
+          updateHideGitMenu(true)
+        }
         break
       case 'gitMenu':
         if (hideGitMenu === false) {
@@ -74,6 +84,7 @@ function Sidebar({
           updateHideTodoSidebarMenu(true)
           updateHideNotesExplorer(true)
           updateHideDirSelect(true)
+          updateHideExcalidrawMenu(true)
         }
         break
       case 'dirSelect':
@@ -94,7 +105,7 @@ function Sidebar({
         <SidebarItem onClick={() => openMenu('calendar')}>
           <FaCalendarDays />
         </SidebarItem>
-        <SidebarItem onClick={() => openMenu('excalidraw')}>
+        <SidebarItem onClick={() => openMenu('excalidrawMenu')}>
           <FaPencil />
         </SidebarItem>
         <SidebarItem onClick={() => openMenu('gitMenu')}>

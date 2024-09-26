@@ -16,6 +16,8 @@ import TodoEditorContainer from './components/TodoEditorContainer'
 import Calendar from './components/Calendar'
 import PopupMenu from './components/PopupMenu'
 import ExcalidrawEditor from './components/ExcalidrawEditor'
+import ExcalidrawSidebarMenu from './components/ExcalidrawSidebarMenu'
+import ExcalidrawCreate from './components/ExcalidrawCreate'
 
 function App(): JSX.Element {
   const [hideDirSelect, updateHideDirSelect] = useState(true)
@@ -28,14 +30,16 @@ function App(): JSX.Element {
   const [hideTodoCreate, updateHideTodoCreate] = useState(true)
   const [currentTodoPath, updateCurrentTodoPath] = useState('')
   const [hideCalendar, updateHideCalendar] = useState(true)
-  const [hideExcalidraw, updateHideExcalidraw] = useState(true)
-  const [excalidrawElements, setExcalidrawElements] = useState()
+  const [hideExcalidrawSidebarMenu, updateHideExcalidrawSidebarMenu] = useState(true)
+  const [hideExcalidrawCreate, updateHideExcalidrawCreate] = useState(true)
+  const [currentExcalidrawPath, updateCurrentExcalidrawPath] = useState('')
   const [hideGitMenu, updateHideGitMenu] = useState(true)
   const [hideAddRemoteMenu, updateHideAddRemoteMenu] = useState(true)
   const [remoteURL, updateRemoteURL] = useState('')
 
   const [hideNoteEditor, updateHideNoteEditor] = useState(true)
   const [hideTodoEditor, updateHideTodoEditor] = useState(true)
+  const [hideExcalidraw, updateHideExcalidraw] = useState(true)
 
   const checkRecentDir = (): void => {
     window.context.recentDirExists().then((result) => {
@@ -111,7 +115,7 @@ function App(): JSX.Element {
 
   const [selected, setSelected] = useState<Date>()
   const [allTodos, updateAllTodos] = useState([{}])
-  const getAllTodos = (): void => {
+  const getAllTodos = async (): Promise<void> => {
     let _temp: Array<object> = []
     window.context.getTodosDirTree().then((todotree) => {
       todotree.children.forEach((dir) => {
@@ -132,6 +136,7 @@ function App(): JSX.Element {
         getRemotes()
         clearInterval(getRemotesInterval)
       }
+      if (remoteURL !== '') clearInterval(getRemotesInterval)
     }, 3000)
     setTimeout(() => {
       clearInterval(getRemotesInterval)
@@ -139,11 +144,6 @@ function App(): JSX.Element {
 
     // get all todos
     getAllTodos()
-
-    // get drawing
-    window.context.openDrawing().then((result) => {
-      setExcalidrawElements(result)
-    })
   }, [])
 
   return (
@@ -154,6 +154,9 @@ function App(): JSX.Element {
       {hideDirCreate ? null : <DirCreate updateHideDirCreate={updateHideDirCreate} />}
       {hideNoteCreate ? null : <NoteCreate updateHideNoteCreate={updateHideNoteCreate} />}
       {hideTodoCreate ? null : <TodoCreate updateHideTodoCreate={updateHideTodoCreate} />}
+      {hideExcalidrawCreate ? null : (
+        <ExcalidrawCreate updateHideExcalidrawCreate={updateHideExcalidrawCreate} />
+      )}
       {hideAddRemoteMenu ? null : (
         <GitAddRemote
           updateHideAddRemoteMenu={updateHideAddRemoteMenu}
@@ -172,6 +175,8 @@ function App(): JSX.Element {
           hideGitMenu={hideGitMenu}
           updateHideGitMenu={updateHideGitMenu}
           handleEditor={handleEditor}
+          hideExcalidrawMenu={hideExcalidrawSidebarMenu}
+          updateHideExcalidrawMenu={updateHideExcalidrawSidebarMenu}
         />
         {hideSidebarMenu ? null : (
           <SidebarMenu>
@@ -189,6 +194,14 @@ function App(): JSX.Element {
                 currentTodoPath={currentTodoPath}
                 updateHideTodoCreate={updateHideTodoCreate}
                 updateCurrentTodoPath={updateCurrentTodoPath}
+                handleEditor={handleEditor}
+              />
+            )}
+            {hideExcalidrawSidebarMenu ? null : (
+              <ExcalidrawSidebarMenu
+                updateHideExcalidrawCreate={updateHideExcalidrawCreate}
+                currentExcalidrawPath={currentExcalidrawPath}
+                updateCurrentExcalidrawPath={updateCurrentExcalidrawPath}
                 handleEditor={handleEditor}
               />
             )}
@@ -220,7 +233,12 @@ function App(): JSX.Element {
               allTodos={allTodos}
             />
           )}
-          {hideExcalidraw ? null : <ExcalidrawEditor excalidrawElements={excalidrawElements} />}
+          {hideExcalidraw ? null : (
+            <ExcalidrawEditor
+              key={currentExcalidrawPath}
+              currentExcalidrawPath={currentExcalidrawPath}
+            />
+          )}
           {hideNoteEditor && hideTodoEditor && hideCalendar && hideExcalidraw ? (
             <div className="flex flex-col items-center justify-center w-full h-full gap-2">
               <h2 className="text-5xl">Welcome!</h2>
