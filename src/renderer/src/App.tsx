@@ -113,7 +113,7 @@ function App(): JSX.Element {
     updatePopupMenu(result)
   }
 
-  const [selected, setSelected] = useState<Date>()
+  const [selected, setSelected] = useState<Date>(new Date())
   const [allTodos, updateAllTodos] = useState([{}])
   const getAllTodos = async (): Promise<void> => {
     let _temp: Array<object> = []
@@ -227,7 +227,7 @@ function App(): JSX.Element {
           )}
           {hideCalendar ? null : (
             <Calendar
-              key={currentTodoPath}
+              key={selected.toString()}
               selected={selected}
               setSelected={setSelected}
               allTodos={allTodos}

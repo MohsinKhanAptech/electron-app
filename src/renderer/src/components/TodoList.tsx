@@ -27,10 +27,10 @@ function TodoList({
   const mapTodoContents = (): JSX.Element => {
     let result = <></>
 
-    const _currentList = currentTodoListContents
-    _currentList.reverse()
+    if (Object.keys(currentTodoListContents).length !== 0) {
+      const _currentList = currentTodoListContents
+      _currentList.reverse()
 
-    if (Object.keys(_currentList).length !== 0) {
       _currentList.forEach((todo, index) => {
         result = (
           <>
