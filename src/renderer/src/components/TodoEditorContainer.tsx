@@ -16,7 +16,6 @@ function TodoEditorContainer({ currentTodoPath, popupMenuConstructor }): JSX.Ele
   const updateCurrentTodoListContents = (): void => {
     window.context.openTodo(currentTodoPath).then((result) => {
       setCurrentTodoListContents(result)
-      console.log(result)
     })
   }
 

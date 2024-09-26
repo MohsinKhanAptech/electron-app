@@ -13,7 +13,6 @@ function ExcalidrawEditor({ currentExcalidrawPath }): JSX.Element {
     // get drawing
     window.context.openDrawing(currentExcalidrawPath).then((result) => {
       setExcalidrawElements(result)
-      console.log(result)
     })
   }, [])
 
