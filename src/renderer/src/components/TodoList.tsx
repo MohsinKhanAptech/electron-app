@@ -30,7 +30,7 @@ function TodoList({
     const _currentList = currentTodoListContents
     _currentList.reverse()
 
-    if (_currentList <= 1 && Object.keys(_currentList[0]).length !== 0) {
+    if (Object.keys(_currentList).length !== 0) {
       _currentList.forEach((todo, index) => {
         result = (
           <>
