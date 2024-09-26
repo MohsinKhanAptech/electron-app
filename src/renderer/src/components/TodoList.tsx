@@ -27,7 +27,10 @@ function TodoList({
   const mapTodoContents = (): JSX.Element => {
     let result = <></>
 
-    if (Object.keys(currentTodoListContents).length !== 0) {
+    if (
+      Object.keys(currentTodoListContents).length !== 0 &&
+      Object.keys(currentTodoListContents[0]).length !== 0
+    ) {
       const _currentList = currentTodoListContents
       _currentList.reverse()
 

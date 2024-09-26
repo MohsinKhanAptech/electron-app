@@ -6,21 +6,29 @@ import TodoList from './TodoList'
 
 import '@renderer/assets/Calendar.css'
 
-function Calendar({ selected, setSelected, allTodos }): JSX.Element {
+function Calendar({ selected, setSelected, allTodos, getAllTodos }): JSX.Element {
   const [currentTodos, setCurrentTodos] = useState(allTodos)
 
   const updateCurrentTodos = (): void => {
-    const result: Array<object> = []
-    allTodos.forEach((todo) => {
-      if (formatDate(todo.startDate, 'dd/MM/yyyy') === formatDate(selected, 'dd/MM/yyyy')) {
-        result.push(todo)
-      }
-    })
-    setCurrentTodos(result)
+    console.log(allTodos)
+    if (Object.keys(allTodos).length !== 0 && Object.keys(allTodos[0]).length !== 0) {
+      const result: Array<object> = []
+      allTodos.forEach((todo) => {
+        if (
+          todo.startDate &&
+          formatDate(todo.startDate, 'dd/MM/yyyy') === formatDate(selected, 'dd/MM/yyyy')
+        ) {
+          result.push(todo)
+        }
+      })
+      setCurrentTodos(result)
+      console.log(currentTodos)
+    }
     console.log(currentTodos)
   }
 
   useEffect(() => {
+    getAllTodos()
     updateCurrentTodos()
   }, [])
 

@@ -231,6 +231,7 @@ function App(): JSX.Element {
               selected={selected}
               setSelected={setSelected}
               allTodos={allTodos}
+              getAllTodos={getAllTodos}
             />
           )}
           {hideExcalidraw ? null : (
