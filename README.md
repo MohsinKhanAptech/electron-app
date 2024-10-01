@@ -1,7 +1,9 @@
 # Paper
 
-A Note taking / todos App
+A Note taking & todos App
 built on Electron with React, TypeScript, Tailwind and more.
+
+Video Link: [youtube.com/watch?v=oKljpDBS_HQ](https://www.youtube.com/watch?v=oKljpDBS_HQ)
 
 ## Note
 
