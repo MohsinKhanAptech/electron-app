@@ -3,7 +3,7 @@
 A Note taking & todos App
 built on Electron with React, TypeScript, Tailwind and more.
 
-Video Link: [youtube.com/watch?v=oKljpDBS_HQ](https://www.youtube.com/watch?v=oKljpDBS_HQ)
+Video Link: [youtu.be/oKljpDBS_HQ](https://youtu.be/oKljpDBS_HQ)
 
 ## Note
 
