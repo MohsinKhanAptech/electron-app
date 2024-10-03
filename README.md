@@ -1,13 +1,26 @@
 # Paper
 
-A Note taking & todos App
+A Note taking / todos App
 built on Electron with React, TypeScript, Tailwind and more.
 
-Video Link: [youtu.be/oKljpDBS_HQ](https://youtu.be/oKljpDBS_HQ)
+## Video Preview
 
-## Note
+Youtube Link: [youtu.be/oKljpDBS_HQ](https://youtu.be/oKljpDBS_HQ)
 
-Some features that are in testing are not yet push to github
+## Dowload
+
+if you dont want to [build on your own](#project-setup), you can download and try it from here
+
+Drive Link: [GoogleDrive](https://drive.google.com/drive/folders/1cmfaJzWeyASyEH1TwdY03NHUOmpQPhHV?usp=sharing)
+
+## Features
+
+- Markdown formatted notes
+- Auto save
+- Todos lists
+- Calander view
+- Cloud sync (using Git)
+- Directory mapping
 
 ## Prerequisites
 
